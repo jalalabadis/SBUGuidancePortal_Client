@@ -1,24 +1,28 @@
-import logo from './logo.svg';
+import { ThemeProvider } from "./context/Themes";
+import { LoaderProvider } from "./context/Preloader";
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
+import Dashboard from './pages/Dashboard';
+import Login from './pages/Login';
 
+import Error from "./pages/Error";
+
+import PushNotification from "./context/PushNotification";
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+<ThemeProvider>
+<LoaderProvider>
+<PushNotification/>
+<BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Dashboard/>} />
+          <Route path="/login" element={<Login/>} />
+          <Route path="*" element={<Error />} />
+        </Routes>
+    </BrowserRouter>
+   
+    </LoaderProvider>
+   </ThemeProvider>
   );
 }
 

@@ -35,7 +35,7 @@ export default function AdminTable({ thead, tbody, fillterValues }) {
                             <Td title={ item.operatorname }>{ item.operatorname }</Td>
                             
                             <Td title={ item.amount }>{ item.amount.toFixed(2) }৳</Td>
-                            <Td class="text-end">
+                            <Td className="text-end">
                                 <Box className="mc-table-action ">
                                     <button  style={{background: "#59E970", padding: "12px"}}
                                     onClick={()=> setViewModal(true, setProductData(item))}>Approve

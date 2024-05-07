@@ -10,7 +10,29 @@
         "alt": "line-pattern" 
     },
     "title": "Login to Admin",
-    "input": [
+    "inputlogin": [
+        { 
+            "icon": "email", 
+            "type": "email", 
+            "placeholder": "Enter your email",
+            "fieldSize": "w-100 h-sm"
+        },
+        { 
+            "icon": "lock", 
+            "type": "password", 
+            "placeholder": "Enter your password",
+            "fieldSize": "w-100 h-sm",
+            "passwordVisible" : true
+        }
+    ],
+
+    "inputreg": [
+        { 
+            "icon": "account_circle", 
+            "type": "username", 
+            "placeholder": "Enter username",
+            "fieldSize": "w-100 h-sm"
+        },
         { 
             "icon": "email", 
             "type": "email", 

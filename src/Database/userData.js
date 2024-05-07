@@ -1,33 +1,29 @@
-import { onValue, ref } from 'firebase/database';
 import { useState, useEffect } from 'react';
-import { getDatabase } from 'firebase/database';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../firebase';
-import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
+import axios from 'axios';
 
 const useUserData = () => {
-  const navigate = useNavigate();
-  const db = getDatabase();
-  const [userData, setUserData] = useState([]);
+  const [userData, setUserData] = useState();
 
   useEffect(() => {
-  
-const userDataListener = onAuthStateChanged(auth, (user) => {
-    if (user) { 
-        onValue(ref(db, "Client_Accounts/" + user.uid), snapshot=>{
-            if(snapshot.exists()){
-                setUserData(snapshot.val());
-            }
-        });
+const userDataListener = () => {
+  const cookie = Cookies.get('AuthToken');
+    if (cookie) { 
+      axios.post(`${process.env.REACT_APP_SERVER}/auth/check`, {token: cookie})
+      .then(res=>{
+           setUserData(res.data);
+      })
+      .catch(err=>{
+        console.log(err);
+        Cookies.remove('AuthToken');
+      })
     }
-    else{
-      navigate('/login')
-    }
-    })
+    };
+
     return () => {
       userDataListener();
     };
-  }, [db, navigate]);
+  }, []);
 
   return userData;
 };

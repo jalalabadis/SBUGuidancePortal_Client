@@ -99,8 +99,6 @@ export default function Header(Database) {
             setSearch("");
         }
     });
-
- 
     return (
         <Section as="header" className={`mc-header ${ scroll }`}>
             <Logo 
@@ -132,22 +130,23 @@ export default function Header(Database) {
                     />
                  
                     
-                   
+                 {Database.Database?.userData&&
                     <WidgetDropdown 
                         icon={ NotificationData.icon }
                         title={ NotificationData.title }
                         badge={ NotificationData.badge }
                         addClass={ NotificationData.addClass }
                         dropdown={ NotificationData.dropdown }
-                    />
+                    />}
+                    {Database.Database?.userData?
                     <ProfileDropdown 
-                        name={ "Admin" }
+                        name={ Database.Database?.userData?.userName }
                         image={ data.profile.image }
-                        username={"@"+ Database.Database?.userData?.useremail?.split('@')[0] }
+                        username={"@"+ Database.Database?.userData?.email?.split('@')[0] }
                         dropdown={ data.profile.dropdown }
-                    />
+                    />:
                      <button onClick={()=>navigate('/login')}
-                      className='login_buttoslk' style={{background: "#DEDDDD"}}>Login</button>
+                      className='login_buttoslk' style={{background: "#DEDDDD"}}>Login</button>}
                 </Box>
                 
                

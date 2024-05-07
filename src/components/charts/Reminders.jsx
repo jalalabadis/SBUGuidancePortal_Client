@@ -9,7 +9,7 @@ function Reminders() {
     <div className='content-mart'>
     <p>Pop-up Reminders</p>
     <hr />
-    <div class="container poport_remainers mt-5">
+    <div className="container poport_remainers mt-5">
   <button className='popr_remainers_editor'  style={{background: '#51A24F' , color: 'white', padding: '10px 20px', borderRadius: '6px'}}>Edit</button>
 
 <h5>Pop-up Reminders Title</h5>

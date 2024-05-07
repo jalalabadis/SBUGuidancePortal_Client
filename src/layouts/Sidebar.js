@@ -14,52 +14,44 @@ export default function Sidebar(Database) {
     "0"+Database.Database.Notification?.length:"9+";
 
     const { drawer } = useContext(DrawerContext);
-    const data =  {
+    const data = {
         "admin": [
-            {
-                "title": "Profile",
-                "menu": [
-                    { "profile":
-                        {
-                        "avater": "http://placehold.it/300x300",
-                        "Username": "Mrt Mahiya", 
-                        "UserID": "01258987",
-                         "Department": "Section, Course & Department" }
-                    }
-                ]
-            },
-            {
-                "title": "Calendar of Activities",
-                "menu": [
-                    { "events": [
-                        { "href": "/user-list", "text": language?"কাস্টমার তালিকা":"Customer List" },
-                        { "href": "/customer-add", "text": language?"নতুন কাস্টমার":"Add Customer" }
-                    ]
-                    },
-                ]
-            },
-            {
-                "title": "Book an Appointment",
-                "menu": [
-                    {
-                    "Appointment":true
-                    }
-                ]
-            },
-            {
-                "title": "Clearance of Requirements",
-                "menu": [
-                    {
-                        "Requirements": "kkkkjjjs"
-                    }
-                ]
-            }
-        ],
-    
-    
-        "button": { "icon": "lock",  "text": "logout" }
-    
-    };
+          Database.Database?.userData && {
+            "title": "Profile",
+            "menu": [
+              {
+                "profile": {
+                  "avater": "http://placehold.it/300x300",
+                  "Username": Database.Database.userData.userName,
+                  "UserID": Database.Database.userData.Number,
+                  "Department": `${Database.Database.userData.Section}, 
+                                  ${Database.Database.userData.Course} & 
+                                  ${Database.Database.userData.Department}`
+                }
+              }
+            ]
+          },
+          {
+            "title": "Calendar of Activities",
+            "menu": [
+              { "events": true }
+            ]
+          },
+          Database.Database?.userData?.type==='student' && {
+            "title": "Book an Appointment",
+            "menu": [
+              { "Appointment": true }
+            ]
+          },
+          Database.Database?.userData?.type==='student' && {
+            "title": "Clearance of Requirements",
+            "menu": [
+              { "Requirements": "kkkkjjjs" }
+            ]
+          }
+        ].filter(Boolean), // Filter out undefined items
+        "button": { "icon": "lock", "text": "logout" }
+      };
     return (
         <Section as="aside" className={`mc-sidebar thin-scrolling ${ drawer ? "active" : "" }`}>
             <MultipleMenu data={data.admin}  />

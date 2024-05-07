@@ -7,65 +7,65 @@ export default function MenuItem({ item }) {
         <Item className={`mc-sidebar-menu-item ${active ? "active" : ""}`} onClick = {()=> setActive(!active)}>
             {item.profile ?
             
-             <div class="card-body">
-                 <div class="d-flex align-items-center" style={{gap: '15px'}}>
-                         <img src={item.profile.avater} class="rounded-circle img-fluid" style={{width: '55px'}} alt="Profile Image"/>
+             <div className="card-body">
+                 <div className="d-flex align-items-center" style={{gap: '15px'}}>
+                         <img src={item.profile.avater} className="rounded-circle img-fluid" style={{width: '55px'}} alt="Profile Image"/>
                      
                      <div>
-                         <p class="card-title">{item.profile.Username}</p>
-                         <p class="card-text">{item.profile.UserID}</p>
+                         <p className="card-title">{item.profile.Username}</p>
+                         <p className="card-text">{item.profile.UserID}</p>
                      </div>
                  </div>
-                 <p class="card-text">{item.profile.Department}</p>
+                 <p className="card-text">{item.profile.Department}</p>
              </div>
          
             :
             item.events?
           <div className="event-calendar">
     
-  <div class="spacer">May 2024</div>
+  <div className="spacer">May 2024</div>
   <div className="full-evnrtd">
-  <span class="date-container">
- <span class="date">31<span class="month">may</span></span>
+  <span className="date-container">
+ <span className="date">31<span className="month">may</span></span>
   </span>
-  <div class="event-list">
-      <div class="event-container">
-        <span class="detail-container">
-          <span class="title">lindenrs rket lindertyss juuytt</span>
+  <div className="event-list">
+      <div className="event-container">
+        <span className="detail-container">
+          <span className="title">lindenrs rket lindertyss juuytt</span>
           <span className="timertktys">12:50pm</span>
-        <span class="description">Every other Sunday </span>
+        <span className="description">Every other Sunday </span>
         </span>
       </div> </div>
       </div>
 
-      <div class="spacer">May 2024</div>
+      <div className="spacer">May 2024</div>
   <div className="full-evnrtd">
-  <span class="date-container">
- <span class="date">31<span class="month">may</span></span>
+  <span className="date-container">
+ <span className="date">31<span className="month">may</span></span>
   </span>
-  <div class="event-list">
-      <div class="event-container">
-        <span class="detail-container">
-          <span class="title">Eid Ul adaha holly</span>
+  <div className="event-list">
+      <div className="event-container">
+        <span className="detail-container">
+          <span className="title">Eid Ul adaha holly</span>
           <span className="timertktys">12:50pm</span>
-        <span class="description">Every other Sunday </span>
+        <span className="description">Every other Sunday </span>
         </span>
       </div> </div>
       </div>
 
 
 
-      <div class="spacer"></div>
+      <div className="spacer"></div>
   <div className="full-evnrtd">
-  <span class="date-container">
- <span class="date">31<span class="month">may</span></span>
+  <span className="date-container">
+ <span className="date">31<span className="month">may</span></span>
   </span>
-  <div class="event-list">
-      <div class="event-container">
-        <span class="detail-container">
-          <span class="title">lindenrs rket lindertyss juuytt uyy</span>
+  <div className="event-list">
+      <div className="event-container">
+        <span className="detail-container">
+          <span className="title">lindenrs rket lindertyss juuytt uyy</span>
           <span className="timertktys">12:50pm</span>
-        <span class="description">Every other Sunday </span>
+        <span className="description">Every other Sunday </span>
         </span>
       </div> </div>
       </div>
@@ -78,26 +78,26 @@ export default function MenuItem({ item }) {
             item.Appointment?
             
 
-  <div class="row justify-content-center">
-    <div class="col-md-12">
+  <div className="row justify-content-center">
+    <div className="col-md-12">
       <form>
-        <div class="form-group ">
+        <div className="form-group ">
           <label>Select Appointment Date:</label>
-          <input type="date" class="form-control" id="date" name="date"/>
+          <input type="date" className="form-control" id="date" name="date"/>
         </div>
-        <div class="form-group mt-3">
+        <div className="form-group mt-3">
           <label>Mobile Number:</label>
-          <input type="tel" class="form-control" id="mobile" name="mobile" placeholder="Enter your mobile number"/>
+          <input type="tel" className="form-control" id="mobile" name="mobile" placeholder="Enter your mobile number"/>
         </div>
 
-        <div class="form-group mt-3 font-weight-bold">
+        <div className="form-group mt-3 font-weight-bold">
           <label>Select Preferred Time of Day:</label>
          <div style={{display: 'flex', gap: '12px'}}>
-        <span><input type="checkbox" class="form-check-input" /> Morning</span> 
-        <span><input type="checkbox" class="form-check-input" /> Afternoon</span> 
+        <span><input type="checkbox" className="form-check-input" /> Morning</span> 
+        <span><input type="checkbox" className="form-check-input" /> Afternoon</span> 
          </div>
         </div>
-        <button type="submit" class="btn btn-secondary btn-block mt-3 w-100">Book Appointment</button>
+        <button type="submit" className="btn btn-secondary btn-block mt-3 w-100">Book Appointment</button>
       </form>
     </div>
   </div>

@@ -2,8 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Modal, Form } from "react-bootstrap";
 import { Table, Thead, Tbody, Th, Tr, Td } from "../elements/Table";
 import { Button,  Text, Box, Heading} from "../elements";
+import LabelField from "../fields/LabelField";
+import Cookies  from 'js-cookie';
+import axios from "axios";
+import { toast } from "react-toastify";
 
-export default function StudentTable({ thead, tbody, fillterValues }) {
+export default function StudentTable({ thead, tbody, fillterValues, updatedData }) {
     const [data, setData] = useState([]);
     const [ProductData, setProductData] = React.useState("");
     const [viewModal, setViewModal] = React.useState(false);
@@ -12,6 +16,40 @@ export default function StudentTable({ thead, tbody, fillterValues }) {
         setData(tbody); 
     }, [tbody]);
 
+///Input changes
+const handleInputChange = (index, value) => {
+    const newFormValues = { ...ProductData };
+    newFormValues[index] = value;
+    setProductData(newFormValues);
+  };
+
+  ////Edit User
+const submitUserdata=()=>{
+    const cookie = Cookies.get('AuthToken');
+    axios.post(`${process.env.REACT_APP_SERVER}/student/update`, {token: cookie, ProductData})
+    .then(res=>{
+        console.log(res.data);
+        updatedData(res.data);
+        setViewModal(false);
+})
+.catch(err=>{
+        toast(err.response?.data?.Message)
+  });
+
+  };
+///Delete User
+const deleteUset=(userID)=>{
+    const cookie = Cookies.get('AuthToken');
+    axios.post(`${process.env.REACT_APP_SERVER}/student/delete`, {token: cookie, userID})
+    .then(res=>{
+        console.log(res.data);
+        updatedData(res.data);
+})
+.catch(err=>{
+        toast(err.response?.data?.Message)
+  });
+
+};
     return (
       <div className='content-mart'>
   <p>Student </p>
@@ -26,24 +64,21 @@ export default function StudentTable({ thead, tbody, fillterValues }) {
                     </Tr>
                 </Thead>
                 <Tbody className="mc-table-body even">
-                    {data?.sort((a,b)=>b.date.time-a.date.time).filter(
-                item=>item.useremail?.toLowerCase().includes(fillterValues.search_by) &&
-                item.operatorname.includes(fillterValues.type_by.replace("All", "")) && 
-                item.status?.toLowerCase().includes(fillterValues.status_by.replace("All", ""))).map((item, index) => (
+                    {data?.filter(item=> item.type==='student').sort((a, b) => b.Mstimer - a.Mstimer).map((item, index) => (
                         <Tr key={ index }> 
-                            <Td title={ item.useremail }>{ item.useremail }</Td>
-                            <Td title={ item.operatorname }>{ item.operatorname }</Td>
+                            <Td title={ item.userName }>{ item.userName }</Td>
+                            <Td title={ item.Number }>{ item.Number }</Td>
                             
-                            <Td title={ item.amount }>{ item.amount.toFixed(2) }৳</Td>
-                            <Td title={ item.status }>{ item.status }</Td>
-                            <Td title={ item.status }>{ item.status }</Td>
-                            <Td class="text-end">
+                            <Td title={ item.Section }>{ item.Section }</Td>
+                            <Td title={ item.Course }>{ item.Course }</Td>
+                            <Td title={ item.Department }>{ item.Department}</Td>
+                            <Td className="text-end">
                                 <Box className="mc-table-action ">
                                     <button  style={{background: "#59E970", padding: "12px"}}
-                                    onClick={()=> setViewModal(true, setProductData(item))}>Edit
+                                    onClick={()=> setViewModal(true, setProductData({ ...item, newpassword: "" }))}>Edit
                                     </button>
                                     <button  style={{background: "#F61919", padding: "12px"}}
-                                    onClick={()=> setViewModal(true, setProductData(item))}>Delete
+                                    onClick={()=> deleteUset(item._id)}>Delete
                                     </button>
                                 </Box>
                             </Td>
@@ -55,66 +90,53 @@ export default function StudentTable({ thead, tbody, fillterValues }) {
            
 
 
-            <Modal show={ viewModal } onHide={()=> setViewModal(false, setProductData(""))}>
+            <Modal show={ viewModal } onHide={()=> setViewModal(false)} >
             <Modal.Header closeButton style={{margin: '0', padding: '10px 10px 0 0' }}/>
             <Modal.Body className={'costomize-popup-hkjs'}>
                 <Box>
-                <center>
-                    <Heading as="h4">Receipt Information</Heading>
-                    <br/>
-                     {ProductData.imageurl? <img src={ProductData.imageurl} width={'140px'} alt="" />:<></>}
-                    </center>
-                    <Form.Group className="form-group inline mb-4">
-                        <Form.Label className="popupsd-lefts">Account </Form.Label>
-                        <Form.Label className="popupsd-rights">
-                        {ProductData.transectionid}
-                        </Form.Label>
-                    </Form.Group>
-                    <Form.Group className="form-group inline mb-4">
-                        <Form.Label className="popupsd-lefts">Amount </Form.Label>
-                        <Form.Label className="popupsd-rights">
-                        {ProductData.amount}
-                        </Form.Label>
-                    </Form.Group>
-                    {ProductData.operatorname==="Bank Transfer"?
-                    <>
-                    <Form.Group className="form-group inline mb-4">
-                        <Form.Label className="popupsd-lefts">Full Name</Form.Label>
-                        <Form.Label className="popupsd-rights">
-                        {ProductData.fullname}
-                        </Form.Label>
-                    </Form.Group>
-                    <Form.Group className="form-group inline mb-4">
-                        <Form.Label className="popupsd-lefts">Bank Nake: {ProductData.paymenttype}</Form.Label>
-                        <Form.Label className="popupsd-rights"></Form.Label>
-                    </Form.Group>
-                    <Form.Group className="form-group inline mb-4">
-                        <Form.Label className="popupsd-lefts">Branch Name </Form.Label>
-                        <Form.Label className="popupsd-rights">
-                        {ProductData.branchname}
-                        </Form.Label>
-                    </Form.Group>
-                    </>:
-                    <></>}
-                    <Form.Group className="form-group inline mb-4">
-                        <Form.Label className="popupsd-lefts">Type Pay </Form.Label>
-                        <Form.Label className="popupsd-rights">
-                        {ProductData.operatorname}
-                        </Form.Label>
-                    </Form.Group>
-                    <Form.Group className="form-group inline mb-4">
-                        <Form.Label className="popupsd-lefts">Mobile Number</Form.Label>
-                        <Form.Label className="popupsd-rights">
-                        {ProductData.transectionid}
-                        </Form.Label>
-                    </Form.Group>
-                    <Form.Group className="form-group inline mb-4">
-                        <Form.Label className="popupsd-lefts">Date</Form.Label>
-                        <Form.Label className="popupsd-rights">
-                        {ProductData?(new Date(ProductData.date?.time)).toLocaleDateString():null}    
-                        </Form.Label>
-                  </Form.Group>
-     
+                  
+                    <Box className="mc-product-upload-organize mb-4">
+                      <LabelField type="text" label="Name" 
+                                  value={ProductData.userName}
+                                  onChange={(e) => handleInputChange('userName', e.target.value)} fieldSize="w-100 h-sm" />
+                     </Box>
+                    
+                     <Box className="mc-product-upload-organize mb-4">
+                      <LabelField type="number" label="Number" 
+                                  value={ProductData.Number}
+                                  onChange={e=>handleInputChange('Number', e.target.value)} fieldSize="w-100 h-sm" />
+                     </Box>
+                     <Box className="mc-product-upload-organize mb-4">
+                      <LabelField type="text" label="Section" 
+                                  value={ProductData.Section}
+                                  onChange={e=>handleInputChange('Section', e.target.value)} fieldSize="w-100 h-sm" />
+                     </Box>
+                     <Box className="mc-product-upload-organize mb-4">
+                      <LabelField type="text" label="Course" 
+                                  value={ProductData.Course}
+                                  onChange={e=>handleInputChange('Course', e.target.value)} fieldSize="w-100 h-sm" />
+                     </Box>
+
+                     <Box className="mc-product-upload-organize mb-4">
+                      <LabelField type="text" label="Department" 
+                                  value={ProductData.Department}
+                                  onChange={e=>handleInputChange('Department', e.target.value)} fieldSize="w-100 h-sm" />
+                     </Box>
+
+                     <Box className="mc-product-upload-organize mb-4">
+                      <LabelField type="email" label="Email" 
+                                  value={ProductData.email}
+                                  onChange={e=>handleInputChange('email', e.target.value)} fieldSize="w-100 h-sm" />
+                     </Box>
+                     <Box className="mc-product-upload-organize mb-4">
+                      <LabelField type="text" label="New Password" 
+                                  value={ProductData.newpassword}
+                                  onChange={e=>handleInputChange('newpassword', e.target.value)} fieldSize="w-100 h-sm" />
+                     </Box>
+                     
+                     <Box className="mc-product-upload-organize mb-4">
+              <Button className="mc-btn primary w-100 h-sm mt-4" onClick={submitUserdata}>Update</Button>
+                  </Box>
                 </Box>
                 </Modal.Body>
             </Modal>

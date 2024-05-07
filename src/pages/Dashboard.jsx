@@ -1,15 +1,24 @@
-import React, {useState } from 'react'
+import React, {useEffect, useState } from 'react'
 import PageLayout from "../layouts/PageLayout";
-import {useTicketData,useNotificationsData} from '../Database';
+import {useTicketData,useNotificationsData, useUserData, useAlluserData} from '../Database';
 import { About, Announcements, CardList, Clearance, ImageSlider, Inventory, Reminders } from '../components/charts';
 import { AdminTable, AppointmentTable, CalendarTable, InventoryTable, StudentTable } from '../components/tables';
 
 
 function Dashboard() {
-    const userData = {};
+    const userData = useUserData();
+    const alluserDatas = useAlluserData();
+    const [alluserData, setAlluserData ]= useState(alluserDatas);
     const PaymentData = [{useremail: "kkkkk", operatorname: "dkkd", amount: 20, status: "dd"}];
     const Tickets = useTicketData();
     const Notification = useNotificationsData();
+
+
+useEffect(()=>{
+setAlluserData(alluserDatas);
+},[alluserDatas]);
+
+
     //** */
     const [fillterValues, setFillterValues]=useState({
         "show_by": "100 row",
@@ -47,51 +56,62 @@ const handleFillter_InputChange = (index, value) => {
           caption: 'Slide 3'
         },
       ];
+
+
+    const updateAlluserData = (data) => {
+        setAlluserData(prevData => [...prevData, data]);
+    };
+
+    const updatedData = (newData) => {
+    setAlluserData(newData);
+  };
   
     return (
     <PageLayout 
     Database={{userData,PaymentData,Tickets, Notification}}
     >
 
-<ImageSlider slideImages={slideImages} />
-<Inventory/>
-<Announcements/>
-<About/>
-<CardList/>
+{(userData?.type!=="admin"&&userData?.type!=="superadmin")&&<ImageSlider slideImages={slideImages} />}
+{userData?.type==='student'&&<Inventory/>}
+{(userData?.type!=="admin"&&userData?.type!=="superadmin")&&<Announcements/>}
+{(userData?.type!=="admin"&&userData?.type!=="superadmin")&&<About/>}
+{(userData?.type==="admin"||userData?.type==="superadmin")&&<CardList userData={userData} alluserData={alluserData}
+                    setAlluserData={updateAlluserData}/>}
 
-<AppointmentTable
+{userData?.type==="admin"&&<AppointmentTable
   thead = { table.Appointment}
    tbody = { PaymentData }
    fillterValues = { fillterValues }
-   />
+   />}
 
-<InventoryTable
+{userData?.type==="admin"&&<InventoryTable
   thead = { table.inventory}
    tbody = { PaymentData }
    fillterValues = { fillterValues }
-   />
+   />}
 
-   <StudentTable 
+{userData?.type==="superadmin"&&<StudentTable 
    thead = { table.Student}
-   tbody = { PaymentData }
+   tbody = { alluserData }
    fillterValues = { fillterValues }
-   />
+   updatedData={updatedData}
+   />}
 
-<AdminTable
+{userData?.type==="superadmin"&&<AdminTable
    thead = { table.Admin}
    tbody = { PaymentData }
    fillterValues = { fillterValues }
-   />
+   />}
 
-<CalendarTable
+{userData?.type==="superadmin"&&<CalendarTable
    thead = { table.Calendar}
    tbody = { PaymentData }
    fillterValues = { fillterValues }
-   />
+   />}
 
-<Clearance/>
+{userData?.type==="admin"&&<Clearance/>}
 
-<Reminders/>
+{userData?.type==="admin"&&<Reminders/>}
 
         </PageLayout>
   )

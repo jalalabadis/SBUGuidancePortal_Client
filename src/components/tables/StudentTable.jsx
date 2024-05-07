@@ -7,7 +7,7 @@ import Cookies  from 'js-cookie';
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export default function StudentTable({ thead, tbody, fillterValues, updatedData }) {
+export default function StudentTable({ thead, tbody, userData, fillterValues, updatedData }) {
     const [data, setData] = useState([]);
     const [ProductData, setProductData] = React.useState("");
     const [viewModal, setViewModal] = React.useState(false);
@@ -73,7 +73,9 @@ const deleteUset=(userID)=>{
                             <Td title={ item.Course }>{ item.Course }</Td>
                             <Td title={ item.Department }>{ item.Department}</Td>
                             <Td className="text-end">
-                                <Box className="mc-table-action ">
+
+                               {userData?.type==="superadmin"&&
+                               <Box className="mc-table-action ">
                                     <button  style={{background: "#59E970", padding: "12px"}}
                                     onClick={()=> setViewModal(true, setProductData({ ...item, newpassword: "" }))}>Edit
                                     </button>
@@ -81,6 +83,15 @@ const deleteUset=(userID)=>{
                                     onClick={()=> deleteUset(item._id)}>Delete
                                     </button>
                                 </Box>
+                                }
+
+                              {userData?.type==="admin"&&
+                               <Box className="mc-table-action ">
+                                    <button  style={{background: "#59E970", padding: "12px"}}
+                                    onClick={()=> setViewModal(true, setProductData({ ...item, newpassword: "" }))}>View
+                                    </button>
+                                </Box>
+                                }
                             </Td>
                         </Tr>
                     ))}
@@ -128,15 +139,17 @@ const deleteUset=(userID)=>{
                                   value={ProductData.email}
                                   onChange={e=>handleInputChange('email', e.target.value)} fieldSize="w-100 h-sm" />
                      </Box>
+
+                     {userData?.type==="superadmin" &&
                      <Box className="mc-product-upload-organize mb-4">
                       <LabelField type="text" label="New Password" 
                                   value={ProductData.newpassword}
                                   onChange={e=>handleInputChange('newpassword', e.target.value)} fieldSize="w-100 h-sm" />
-                     </Box>
+                     </Box>}
                      
-                     <Box className="mc-product-upload-organize mb-4">
+                     {userData?.type==="superadmin" && <Box className="mc-product-upload-organize mb-4">
               <Button className="mc-btn primary w-100 h-sm mt-4" onClick={submitUserdata}>Update</Button>
-                  </Box>
+                  </Box>}
                 </Box>
                 </Modal.Body>
             </Modal>

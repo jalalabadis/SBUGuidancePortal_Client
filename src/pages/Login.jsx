@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase';
-import {day,  month, year, hours, minutes, seconds, formattedDate} from "../components/Timezone";
 import { useNavigate } from 'react-router-dom';
-import { Box, Form, Heading, Button,  Image } from "../components/elements";
+import { Box, Form,  Button } from "../components/elements";
 import IconField from "../components/fields/IconField";
 import Logo from "../components/Logo";
 import data from "../data/master-admin/Adminlogin.json";
-import { child, get, getDatabase, ref, update } from 'firebase/database';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { ToastContainer, toast } from 'react-toastify';
@@ -17,7 +13,6 @@ import 'react-toastify/dist/ReactToastify.css';
 function Login() {
 const navigate = useNavigate();
 const [formValues, setFormValues] = useState({});
-const [errorMessage, setErrorMessage]=useState('no');
 const [buttonSign, setButtonSign]=useState(false);
 const [regAdmin, setRegAdmin]=useState(false);
 
@@ -95,11 +90,6 @@ You need to register super admin account.
 
 
         <Form className="mc-auth-form">
-{errorMessage!=='no'&&
-  <article className="message is-danger">
-  <div className="message-body">{errorMessage}</div>
-  </article>
-  }
 
             {(regAdmin?data.inputreg:data.inputlogin).map((item, index) => (
                 <IconField 

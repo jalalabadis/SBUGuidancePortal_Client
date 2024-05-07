@@ -1,93 +1,32 @@
 import React, {useEffect, useState } from 'react'
 import PageLayout from "../layouts/PageLayout";
-import {useUserData, useAlluserData, useAllcalendarData} from '../Database';
+import {useUserData, useAlluserData, useAllcalendarData, useAllannouncementData} from '../Database';
 import { About, Announcements, CardList, Clearance, ImageSlider, Inventory, Reminders } from '../components/charts';
 import { AdminTable, AppointmentTable, CalendarTable, InventoryTable, StudentTable } from '../components/tables';
+import { eventActivetyData } from '../engine/eventActivety';
+import AnnouncementTable from '../components/tables/AnnouncementTable';
+import useAllInventoryData from '../Database/allInventoryData';
 
 
 function Dashboard() {
     const userData = useUserData();
     const alluserDatas = useAlluserData();
     const allcalendarDatas = useAllcalendarData();
+    const allannouncementDatas = useAllannouncementData();
+    const allinventoryDatas = useAllInventoryData();
     const [alluserData, setAlluserData ]= useState();
     const [calendarData, setCalendarData ]= useState();
+    const [announcementData, setAnnouncementData ]= useState();
+    const [inventoryData, setInventoryData ]= useState();
     const PaymentData = [{useremail: "kkkkk", operatorname: "dkkd", amount: 20, status: "dd"}];
-
+    const preparedData = eventActivetyData(allcalendarDatas);
 
 useEffect(()=>{
 setAlluserData(alluserDatas);
 setCalendarData(allcalendarDatas);
-},[alluserDatas, allcalendarDatas]);
-
-
-
-
-
-
-
-
-
-// Sort the data by date
-allcalendarDatas?.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-// Initialize variables to keep track of current month and year
-let currentMonth = '';
-let currentYear = '';
-
-// Mapping of month numbers to month names
-const monthNames = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-];
-
-// Array to hold prepared data
-const preparedData = [];
-
-// Function to get weekday name from date
-function getWeekdayName(dateString) {
-    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const date = new Date(dateString);
-    return days[date.getDay()];
-}
-
-// Iterate through the sorted data
-allcalendarDatas?.forEach(event => {
-    const { title, description, time, date } = event;
-    const [year, month, day] = date.split('-');
-    const monthYear = `${month}-${year}`;
-    const weekname = getWeekdayName(date);
-
-    // Check if month has changed
-    if (monthYear !== `${currentMonth}-${currentYear}`) {
-        // Add spacer for new month
-        preparedData.push({ type: 'spacer', month: monthNames[parseInt(month) - 1], year });
-        currentMonth = month;
-        currentYear = year;
-    }
-
-    // Add event data
-    preparedData.push({ type: 'event', title, description, time, date, weekname, day });
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+setAnnouncementData(allannouncementDatas);
+setInventoryData(allinventoryDatas);
+},[alluserDatas, allcalendarDatas, allannouncementDatas, allinventoryDatas]);
 
 
 
@@ -108,10 +47,11 @@ const handleFillter_InputChange = (index, value) => {
 
     const table =    
     {"Appointment": ["Date", "Name", "Contact", "Status",  "action"],
-    "inventory": ["Target", "To", "Status", "Title", "Notice", "action"],
+    "inventory": ["Target", "To",  "Notice", "action"],
     "Student": ["Name", "Number", "Section", "Course", "Department", "action"],
     "Admin": ["Name", "Number", "Department", "action"],
-    "Calendar": ["Time", "Title", "Description", "action"]
+    "Calendar": ["Time", "Title", "Description", "action"],
+    "Announcement": ["Thumbnail", "Title", "Description", "action"]
     };
   
       const slideImages = [
@@ -138,6 +78,14 @@ const handleFillter_InputChange = (index, value) => {
       setCalendarData(prevData => [...prevData, data]);
   };
 
+  const updateAllannouncementData = (data) => {
+    setAnnouncementData(prevData => [...prevData, data]);
+};
+
+const updateinventoryData = (data) => {
+  setInventoryData(prevData => [...prevData, data]);
+};
+
   ///////User Data Onchange
     const updatedData = (newData) => {
     setAlluserData(newData);
@@ -147,6 +95,16 @@ const handleFillter_InputChange = (index, value) => {
   const updatedcalendarData = (newData) => {
     setCalendarData(newData);
   };
+
+  /////Announcement Data Onchange
+  const updatedannouncementData = (newData) => {
+    setAnnouncementData(newData);
+  };
+
+   /////inventory Data Onchange
+   const updatedinventoryData = (newData) => {
+    setInventoryData(newData);
+  };
     return (
     <PageLayout 
     Database={{userData,PaymentData, preparedData}}
@@ -154,10 +112,15 @@ const handleFillter_InputChange = (index, value) => {
 
 {(userData?.type!=="admin"&&userData?.type!=="superadmin")&&<ImageSlider slideImages={slideImages} />}
 {userData?.type==='student'&&<Inventory/>}
-{(userData?.type!=="admin"&&userData?.type!=="superadmin")&&<Announcements/>}
+{(userData?.type!=="admin"&&userData?.type!=="superadmin")&&<Announcements data={announcementData} />}
 {(userData?.type!=="admin"&&userData?.type!=="superadmin")&&<About/>}
-{(userData?.type==="admin"||userData?.type==="superadmin")&&<CardList userData={userData} alluserData={alluserData}
-                    setAlluserData={updateAlluserData} setCalendarData={updateAllcalendarData}/>}
+{(userData?.type==="admin"||userData?.type==="superadmin")&&<CardList userData={userData}
+ alluserData={alluserData} setAlluserData={updateAlluserData} 
+ calendarData={calendarData} setCalendarData={updateAllcalendarData}
+ announcementData={announcementData} setAnnouncementData={updateAllannouncementData}
+ inventoryData={inventoryData} setInventoryData={updateinventoryData}
+
+ />}
 
 {userData?.type==="admin"&&<AppointmentTable
   thead = { table.Appointment}
@@ -167,13 +130,15 @@ const handleFillter_InputChange = (index, value) => {
 
 {userData?.type==="admin"&&<InventoryTable
   thead = { table.inventory}
-   tbody = { PaymentData }
+   tbody = {inventoryData }
    fillterValues = { fillterValues }
+   updatedinventoryData={updatedinventoryData}
    />}
 
-{userData?.type==="superadmin"&&<StudentTable 
+{(userData?.type==="superadmin"||userData?.type==='admin')&&<StudentTable 
    thead = { table.Student}
    tbody = { alluserData }
+   userData={userData}
    fillterValues = { fillterValues }
    updatedData={updatedData}
    />}
@@ -183,6 +148,13 @@ const handleFillter_InputChange = (index, value) => {
    tbody = { alluserData }
    fillterValues = { fillterValues }
    updatedData={updatedData}
+   />}
+
+{(userData?.type==="superadmin"||userData?.type==='admin')&&<AnnouncementTable 
+   thead = { table.Announcement}
+   tbody = { announcementData }
+   fillterValues = { fillterValues }
+   updatedannouncementData={updatedannouncementData}
    />}
 
 {userData?.type==="superadmin"&&<CalendarTable

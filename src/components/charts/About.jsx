@@ -3,7 +3,7 @@ import React from 'react'
 function About() {
   return (
     <div className='content-mart'>
-  <p>Announcements</p>
+  <p>About</p>
   <hr />
     <div className="abouts_post mt-5">
   <div className="about_wipper">

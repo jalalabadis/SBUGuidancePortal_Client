@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { Form, Modal } from 'react-bootstrap';
 import { FaPlus } from "react-icons/fa6";
-import { Box, Button, Heading } from '../elements';
+import { Box, Button, Heading, Icon, Input, Label, Text  } from '../elements';
 import LabelField from './../fields/LabelField';
 import {ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 import LabelTextarea from '../fields/LabelTextarea';
+import Cookies  from 'js-cookie';
 
-function CardList({userData, alluserData, setAlluserData, setCalendarData}) {
+function CardList({userData, alluserData, setAlluserData, calendarData, setCalendarData,
+  announcementData, setAnnouncementData, inventoryData, setInventoryData
+}) {
   const [studentName, setStudentName]=useState('');
   const [studentNumber, setStudentNumber]=useState('');
   const [studentSection, setStudentSection]=useState('');
@@ -18,20 +21,29 @@ function CardList({userData, alluserData, setAlluserData, setCalendarData}) {
   const [viewModal, setViewModal] = React.useState(false);
   const [adminAdd, setAdminAdd] = React.useState(false);
   const [calenderModal, setCalenderModal]=useState(false);
+  const [announcementModal, setAnnouncementModal]=useState(false);
+  const [inventoryModal, setInventoryModal]=useState(false);
   const [title, setTitle]=useState('');
   const [description, setDescription]=useState('');
   const [preferredDate, setPreferredDate]=useState('');
     const [preferredTime, setPreferredTime]=useState('');
+    const [uploadFile, setUploadFile] = useState('image upload');
+    const [AnnouncementImageShow, setAnnouncementImageShow]=useState(null);
+    const [AnnouncementImage, setAnnouncementImage]=useState(null);
+    const [target, setTarget]=useState('Student');
+    const [toInventory, setToInventory]=useState('');
+    const [notice, setNotice]=useState('');
 
   ////Add New Student/Admin
   const submitUserdata=()=>{
+    const cookie = Cookies.get('AuthToken');
     const requestUrl = `${process.env.REACT_APP_SERVER}/${adminAdd ? 'admin' : 'student'}/add`;
     if (!studentName || !studentNumber || (!adminAdd && !studentSection) || (!adminAdd && !studentCourse) || !studentDepartment || !email || !password) {
       toast("Fill in all required information");
       return;
     }
     
-  axios.post(requestUrl, {studentName, studentNumber, studentSection, studentCourse, studentDepartment, email, password})
+  axios.post(requestUrl, {token: cookie,  studentName, studentNumber, studentSection, studentCourse, studentDepartment, email, password})
   .then(response=>{
     if(response.data.result){
       setAlluserData(response.data.result);
@@ -49,9 +61,10 @@ function CardList({userData, alluserData, setAlluserData, setCalendarData}) {
 
 ///////Addd Calender Data
 const submiteventsdata=()=>{
+  const cookie = Cookies.get('AuthToken');
   if(title&&description&&preferredDate&&preferredTime){
     const requestUrl = `${process.env.REACT_APP_SERVER}/calendar/add`;
-  axios.post(requestUrl, {title,description,preferredDate,preferredTime})
+  axios.post(requestUrl, {token: cookie, title,description,preferredDate,preferredTime})
   .then(response=>{
     if(response.data.result){
       setCalendarData(response.data.result);
@@ -70,9 +83,71 @@ else{
 }
 }
 
+///////Add Annoucment
+const uploadImgaeFile=(e)=>{
+  setAnnouncementImage(e.target.files[0]);
+  if (e.target.files[0]) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      setAnnouncementImageShow(reader.result);
+    }
+    reader.readAsDataURL(e.target.files[0]);
+  }
+  };
+const submitAnnouncementdata=()=>{
+  const cookie = Cookies.get('AuthToken');
+  if(title&&description&&AnnouncementImage){
+    const formData = new FormData();
+    formData.append('title', title);
+  formData.append('description', description);
+  formData.append('file', AnnouncementImage);
+  formData.append('token', cookie);
+    const requestUrl = `${process.env.REACT_APP_SERVER}/announcement/add`;
+  axios.post(requestUrl, formData)
+  .then(response=>{
+    if(response.data.result){
+      setAnnouncementData(response.data.result);
+      setAnnouncementModal(false);
+    }
+    else{
+      toast(response.data);
+    }
+  })
+  .catch(err=>{
+    console.log(err)
+  });
+}
+else{
+  toast("fill all info");
+}
+
+};
 
 
 
+///////Addd inventory Data 
+const submitinventorydata=()=>{
+  const cookie = Cookies.get('AuthToken');
+  if(target&&toInventory&&notice){
+    const requestUrl = `${process.env.REACT_APP_SERVER}/inventory/add`;
+  axios.post(requestUrl, {token: cookie, target,toInventory,notice})
+  .then(response=>{
+    if(response.data.result){
+      setInventoryData(response.data.result);
+      setInventoryModal(false);
+    }
+    else{
+      toast(response.data);
+    }
+  })
+  .catch(err=>{
+    console.log(err)
+  });
+}
+else{
+  toast("fill all info");
+}
+}
   return (
     <div className="container mt-5">
   <div className="row">
@@ -89,8 +164,8 @@ else{
         <div className="col-md-6 mb-6">
       <div className="card ">
         <div className="cardlisjkj">
-        <span>Total Announcements:  500</span> 
-        <FaPlus />
+        <span>Total Announcements:  {announcementData?.length}</span> 
+        <FaPlus onClick={()=> setAnnouncementModal(true)} />
         </div>
         </div> 
         </div> 
@@ -98,8 +173,8 @@ else{
       {userData?.type==="admin"&&<div className="col-md-6 mb-6">
       <div className="card ">
         <div className="cardlisjkj">
-        <span>Inventory:  500</span> 
-        <FaPlus />
+        <span>Inventory:  {inventoryData?.length}</span> 
+        <FaPlus onClick={()=>setInventoryModal(true)} />
         </div>
         </div> 
         </div> }
@@ -108,7 +183,7 @@ else{
          <div className="col-md-6 mb-6">
       <div className="card ">
         <div className="cardlisjkj">
-        <span>TAppointment Pending:  500</span> 
+        <span>Appointment Pending:  500</span> 
         </div>
         </div> 
         </div> }
@@ -125,7 +200,7 @@ else{
         {userData?.type==="superadmin"&& <div className="col-md-6 mb-6">
       <div className="card ">
         <div className="cardlisjkj">
-        <span>Total Calendar:  500</span> 
+        <span>Total Calendar:  {calendarData?.length}</span> 
         <FaPlus onClick={e=>setCalenderModal(true)} />
         </div>
         </div> 
@@ -134,6 +209,7 @@ else{
         </div> 
         
         
+        {/* User Model */}
 
         <Modal show={ viewModal } onHide={()=> setViewModal(false)} >
             <Modal.Header closeButton style={{margin: '0', padding: '10px 10px 0 0' }}/>
@@ -191,7 +267,7 @@ else{
 
 
 
-
+{/* Calendar Model */}
             <Modal show={ calenderModal } onHide={()=> setCalenderModal(false)} >
             <Modal.Header closeButton style={{margin: '0', padding: '10px 10px 0 0' }}/>
             <Modal.Body className={'costomize-popup-hkjs'}>
@@ -230,9 +306,82 @@ else{
 
 
 
+{/* Anmoucement Model */}
+
+
+<Modal show={ announcementModal } onHide={()=> setAnnouncementModal(false)} >
+            <Modal.Header closeButton style={{margin: '0', padding: '10px 10px 0 0' }}/>
+            <Modal.Body className={'costomize-popup-hkjs'}>
+                <Box>
+                  
+                <Box className="mc-product-upload-file mb-4">
+                                <Input type="file" id="product" onChange={uploadImgaeFile} />
+                                <Label htmlFor="product">{AnnouncementImageShow?<img src={AnnouncementImageShow} width={'85px'} alt="" />:<Icon type="collections" />}
+                                <Text>{ uploadFile }</Text></Label>
+                            </Box>
+
+                    <Box className="mc-product-upload-organize mb-4">
+                      <LabelField type="text" label="Title" 
+                                  value={title}
+                                  onChange={e=>setTitle(e.target.value)} fieldSize="w-100 h-sm" />
+                     </Box>
+
+                     <Box className="mc-product-upload-organize mb-4">
+                      <LabelTextarea type="text" label="Description"
+                                  value={description}
+                                  onChange={e=>setDescription(e.target.value)} fieldSize="w-100 h-100" />
+                     </Box>
+                     
+                    
+
+
+                     <Box className="mc-product-upload-organize mb-4">
+              <Button className="mc-btn primary w-100 h-sm mt-4" onClick={submitAnnouncementdata}>Add Announcement</Button>
+                  </Box>
+                </Box>
+                </Modal.Body>
+            </Modal>
 
 
 
+{/* Inventory Model */}
+
+
+<Modal show={ inventoryModal } onHide={()=> setInventoryModal(false)} >
+            <Modal.Header closeButton style={{margin: '0', padding: '10px 10px 0 0' }}/>
+            <Modal.Body className={'costomize-popup-hkjs'}>
+                <Box>
+                <Box className="mc-product-upload-organize mb-4">
+                                    <LabelField label="Target" 
+                                    option={['Student', 'Section', 'Department']}
+                                    value={target}
+                                    onChange={e=>setTarget(e.target.value)} fieldSize="w-100 h-sm" />
+                                    
+                                </Box>
+
+
+
+                    <Box className="mc-product-upload-organize mb-4">
+                      <LabelField type="text" label={target==="Student"?"Student Number":target==="Section"?"Section Name":"Department Name"}
+                                  value={toInventory}
+                                  onChange={e=>setToInventory(e.target.value)} fieldSize="w-100 h-sm" />
+                     </Box>
+
+                     <Box className="mc-product-upload-organize mb-4">
+                      <LabelTextarea type="text" label="notice"
+                                  value={notice}
+                                  onChange={e=>setNotice(e.target.value)} fieldSize="w-100 h-100" />
+                     </Box>
+                     
+                    
+
+
+                     <Box className="mc-product-upload-organize mb-4">
+              <Button className="mc-btn primary w-100 h-sm mt-4" onClick={submitinventorydata}>Add Inventory</Button>
+                  </Box>
+                </Box>
+                </Modal.Body>
+            </Modal>
 
 
         <ToastContainer/>

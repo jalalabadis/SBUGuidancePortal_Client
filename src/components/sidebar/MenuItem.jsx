@@ -1,5 +1,6 @@
 import React from "react";
 import { List, Item, Anchor, Button, Fieldset } from "../elements";
+import { formatTime } from "../../engine/formatTime";
 
 export default function MenuItem({ item }) {
     const [active, setActive] = React.useState(false);
@@ -40,7 +41,7 @@ export default function MenuItem({ item }) {
             <div className="event-container">
               <span className="detail-container">
                 <span className="title">{item.title}</span>
-                <span className="timertktys">{item.time}</span>
+                <span className="timertktys">{formatTime(item.time)}</span>
                 <span className="description">{item.description}</span>
               </span>
             </div>

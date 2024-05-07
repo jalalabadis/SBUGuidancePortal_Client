@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form } from "react-bootstrap";
 import { Table, Thead, Tbody, Th, Tr, Td } from "../elements/Table";
-import { Button,  Text, Box, Heading} from "../elements";
+import { Button,  Text, Box, Heading, Input, Label, Icon} from "../elements";
 import LabelField from "../fields/LabelField";
 import Cookies  from 'js-cookie';
 import axios from "axios";
@@ -9,10 +9,13 @@ import { toast } from "react-toastify";
 import LabelTextarea from "../fields/LabelTextarea";
 import { formatTime } from "../../engine/formatTime";
 
-export default function CalendarTable({ thead, tbody, fillterValues, updatedcalendarData }) {
+export default function AnnouncementTable({ thead, tbody, fillterValues, updatedannouncementData }) {
     const [data, setData] = useState([]);
     const [ProductData, setProductData] = React.useState("");
     const [viewModal, setViewModal] = React.useState(false);
+    const [AnnouncementImageShow, setAnnouncementImageShow]=useState(null);
+    const [AnnouncementImage, setAnnouncementImage]=useState(null);
+    const [uploadFile, setUploadFile] = useState('image upload');
 
     useEffect(()=> {
         setData(tbody); 
@@ -23,13 +26,31 @@ const handleInputChange = (index, value) => {
     newFormValues[index] = value;
     setProductData(newFormValues);
   };
-      ////Edit User
+      ////Edit Annoucment
+      const uploadImgaeFile=(e)=>{
+        setAnnouncementImage(e.target.files[0]);
+        if (e.target.files[0]) {
+          const reader = new FileReader();
+          reader.onload = () => {
+            setAnnouncementImageShow(reader.result);
+          }
+          reader.readAsDataURL(e.target.files[0]);
+        }
+        };
 const updateeventsdata=()=>{
     const cookie = Cookies.get('AuthToken');
-    axios.post(`${process.env.REACT_APP_SERVER}/calendar/update`, {token: cookie, ProductData})
+    const formData = new FormData();
+  formData.append('_id',  ProductData._id);
+  formData.append('title',  ProductData.title);
+  formData.append('description',  ProductData.description);
+  formData.append('thumbnail',  ProductData.thumbnail);
+  formData.append('file', AnnouncementImage);
+  formData.append('token', cookie);
+    axios.post(`${process.env.REACT_APP_SERVER}/announcement/update`, formData)
     .then(res=>{
-        console.log(res.data);
-        updatedcalendarData(res.data);
+        setAnnouncementImage();
+        setAnnouncementImageShow();
+        updatedannouncementData(res.data);
         setViewModal(false);
 })
 .catch(err=>{
@@ -38,12 +59,12 @@ const updateeventsdata=()=>{
 
   };
 ///Delete User
-const deleteUset=(calendarID)=>{
+const deleteUset=(announcementID)=>{
     const cookie = Cookies.get('AuthToken');
-    axios.post(`${process.env.REACT_APP_SERVER}/calendar/delete`, {token: cookie, calendarID})
+    axios.post(`${process.env.REACT_APP_SERVER}/announcement/delete`, {token: cookie, announcementID})
     .then(res=>{
         console.log(res.data);
-        updatedcalendarData(res.data);
+        updatedannouncementData(res.data);
 })
 .catch(err=>{
         toast(err.response?.data?.Message)
@@ -53,7 +74,7 @@ const deleteUset=(calendarID)=>{
 
 return (
       <div className='content-mart'>
-  <p>Calendar</p>
+  <p>Announcement</p>
   <hr />
         <Box className="mc-table-responsive mt-5">
             <Table className="mc-table tablecustopmy-poly">
@@ -67,7 +88,8 @@ return (
                 <Tbody className="mc-table-body even">
                     {data?.sort((a, b) => b.Mstimer - a.Mstimer).map((item, index) => (
                         <Tr key={ index }> 
-                            <Td title={ item.time }>{ item.date }<br/>{ formatTime(item.time) }</Td>
+                            <Td title={ item.time }>
+                            <img src={`${process.env.REACT_APP_SERVER}/uploads/${item.thumbnail}`} alt="" style={{width: '80px', height: '80px'}}/></Td>
                             <Td title={ item.title }>{ item.title }</Td>
                             
                             <Td title={ item.description }>{ item.description }</Td>
@@ -94,6 +116,14 @@ return (
             <Modal.Header closeButton style={{margin: '0', padding: '10px 10px 0 0' }}/>
             <Modal.Body className={'costomize-popup-hkjs'}>
                 <Box>
+
+                <Box className="mc-product-upload-file mb-4">
+                                <Input type="file" id="product" onChange={uploadImgaeFile} />
+                                <Label htmlFor="product">
+            <img src={AnnouncementImageShow?AnnouncementImageShow:
+                      `${process.env.REACT_APP_SERVER}/uploads/${ProductData.thumbnail}`} width={'85px'} alt="" />
+                                <Text>{ uploadFile }</Text></Label>
+                </Box>
                   
                     <Box className="mc-product-upload-organize mb-4">
                       <LabelField type="text" label="Title" 
@@ -106,18 +136,6 @@ return (
                                   value={ProductData.description}
                                   onChange={e=>handleInputChange('description', e.target.value)} fieldSize="w-100 h-100" />
                      </Box>
-                     <Box className="mc-product-upload-organize mb-4">
-                      <LabelField type="date" label="Date"
-                                  value={ProductData.date}
-                                  onChange={e=>handleInputChange('date', e.target.value)} fieldSize="w-100 h-sm" />
-                     </Box>
-                     <Box className="mc-product-upload-organize mb-4">
-                      <LabelField type="time" label="Time"
-                                  value={ProductData.time}
-                                  onChange={e=>handleInputChange('time', e.target.value)} fieldSize="w-100 h-sm" />
-                     </Box>
-
-
                      <Box className="mc-product-upload-organize mb-4">
               <Button className="mc-btn primary w-100 h-sm mt-4" onClick={updateeventsdata}>Submit</Button>
                   </Box>

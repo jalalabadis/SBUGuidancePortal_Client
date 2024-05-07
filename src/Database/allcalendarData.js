@@ -1,4 +1,3 @@
-import { onValue, ref } from 'firebase/database';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 

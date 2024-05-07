@@ -2,8 +2,8 @@ import React from "react";
 import { Dropdown } from "react-bootstrap";
 import { DuelText, RoundAvatar } from "..";
 import { Anchor } from "../elements";
-import { auth } from "../../firebase";
 import { useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie';
 
 export default function ProfileDropdown({ name, username, image }) {
     const navigate = useNavigate()
@@ -25,9 +25,11 @@ export default function ProfileDropdown({ name, username, image }) {
                     <Anchor
                         icon={'lock'}
                         text={'logout'}
-                        onClick={e=>auth.signOut().then(()=>{
-                            navigate('/');
-                            })}
+                        onClick={e=>
+                            {
+                          Cookies.remove('AuthToken');
+                            }
+                        }
                         className="mc-dropdown-menu"
                     />
                 

@@ -2,8 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Modal, Form } from "react-bootstrap";
 import { Table, Thead, Tbody, Th, Tr, Td } from "../elements/Table";
 import { Button,  Text, Box, Heading} from "../elements";
+import LabelField from "../fields/LabelField";
+import Cookies  from 'js-cookie';
+import axios from "axios";
+import { toast } from "react-toastify";
+import LabelTextarea from "../fields/LabelTextarea";
 
-export default function CalendarTable({ thead, tbody, fillterValues }) {
+export default function CalendarTable({ thead, tbody, fillterValues, updatedcalendarData }) {
     const [data, setData] = useState([]);
     const [ProductData, setProductData] = React.useState("");
     const [viewModal, setViewModal] = React.useState(false);
@@ -11,7 +16,45 @@ export default function CalendarTable({ thead, tbody, fillterValues }) {
     useEffect(()=> {
         setData(tbody); 
     }, [tbody]);
+///Input changes
+const handleInputChange = (index, value) => {
+    const newFormValues = { ...ProductData };
+    newFormValues[index] = value;
+    setProductData(newFormValues);
+  };
+      ////Edit User
+const updateeventsdata=()=>{
+    const cookie = Cookies.get('AuthToken');
+    axios.post(`${process.env.REACT_APP_SERVER}/calendar/update`, {token: cookie, ProductData})
+    .then(res=>{
+        console.log(res.data);
+        updatedcalendarData(res.data);
+        setViewModal(false);
+})
+.catch(err=>{
+        toast(err.response?.data?.Message)
+  });
 
+  };
+///Delete User
+const deleteUset=(calendarID)=>{
+    const cookie = Cookies.get('AuthToken');
+    axios.post(`${process.env.REACT_APP_SERVER}/calendar/delete`, {token: cookie, calendarID})
+    .then(res=>{
+        console.log(res.data);
+        updatedcalendarData(res.data);
+})
+.catch(err=>{
+        toast(err.response?.data?.Message)
+  });
+
+};
+
+////
+const formatTime = (timeString) => {
+    const time = new Date(`1970-01-01T${timeString}`);
+    return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
     return (
       <div className='content-mart'>
   <p>Calendar</p>
@@ -26,23 +69,20 @@ export default function CalendarTable({ thead, tbody, fillterValues }) {
                     </Tr>
                 </Thead>
                 <Tbody className="mc-table-body even">
-                    {data?.sort((a,b)=>b.date.time-a.date.time).filter(
-                item=>item.useremail?.toLowerCase().includes(fillterValues.search_by) &&
-                item.operatorname.includes(fillterValues.type_by.replace("All", "")) && 
-                item.status?.toLowerCase().includes(fillterValues.status_by.replace("All", ""))).map((item, index) => (
+                    {data?.sort((a, b) => b.Mstimer - a.Mstimer).map((item, index) => (
                         <Tr key={ index }> 
-                            <Td title={ item.useremail }>{ item.useremail }</Td>
-                            <Td title={ item.operatorname }>{ item.operatorname }</Td>
+                            <Td title={ item.time }>{ item.date }<br/>{ formatTime(item.time) }</Td>
+                            <Td title={ item.title }>{ item.title }</Td>
                             
-                            <Td title={ item.amount }>{ item.amount.toFixed(2) }৳</Td>
+                            <Td title={ item.description }>{ item.description }</Td>
                             
                             <Td className="text-end">
                                 <Box className="mc-table-action ">
                                     <button  style={{background: "#59E970", padding: "12px"}}
-                                    onClick={()=> setViewModal(true, setProductData(item))}>Approve
+                                    onClick={()=> setViewModal(true, setProductData(item))}>Edit
                                     </button>
                                     <button  style={{background: "#F61919", padding: "12px"}}
-                                    onClick={()=> setViewModal(true, setProductData(item))}>Cancel
+                                    onClick={()=> deleteUset(item._id)}>Delete
                                     </button>
                                 </Box>
                             </Td>
@@ -58,62 +98,33 @@ export default function CalendarTable({ thead, tbody, fillterValues }) {
             <Modal.Header closeButton style={{margin: '0', padding: '10px 10px 0 0' }}/>
             <Modal.Body className={'costomize-popup-hkjs'}>
                 <Box>
-                <center>
-                    <Heading as="h4">Receipt Information</Heading>
-                    <br/>
-                     {ProductData.imageurl? <img src={ProductData.imageurl} width={'140px'} alt="" />:<></>}
-                    </center>
-                    <Form.Group className="form-group inline mb-4">
-                        <Form.Label className="popupsd-lefts">Account </Form.Label>
-                        <Form.Label className="popupsd-rights">
-                        {ProductData.transectionid}
-                        </Form.Label>
-                    </Form.Group>
-                    <Form.Group className="form-group inline mb-4">
-                        <Form.Label className="popupsd-lefts">Amount </Form.Label>
-                        <Form.Label className="popupsd-rights">
-                        {ProductData.amount}
-                        </Form.Label>
-                    </Form.Group>
-                    {ProductData.operatorname==="Bank Transfer"?
-                    <>
-                    <Form.Group className="form-group inline mb-4">
-                        <Form.Label className="popupsd-lefts">Full Name</Form.Label>
-                        <Form.Label className="popupsd-rights">
-                        {ProductData.fullname}
-                        </Form.Label>
-                    </Form.Group>
-                    <Form.Group className="form-group inline mb-4">
-                        <Form.Label className="popupsd-lefts">Bank Nake: {ProductData.paymenttype}</Form.Label>
-                        <Form.Label className="popupsd-rights"></Form.Label>
-                    </Form.Group>
-                    <Form.Group className="form-group inline mb-4">
-                        <Form.Label className="popupsd-lefts">Branch Name </Form.Label>
-                        <Form.Label className="popupsd-rights">
-                        {ProductData.branchname}
-                        </Form.Label>
-                    </Form.Group>
-                    </>:
-                    <></>}
-                    <Form.Group className="form-group inline mb-4">
-                        <Form.Label className="popupsd-lefts">Type Pay </Form.Label>
-                        <Form.Label className="popupsd-rights">
-                        {ProductData.operatorname}
-                        </Form.Label>
-                    </Form.Group>
-                    <Form.Group className="form-group inline mb-4">
-                        <Form.Label className="popupsd-lefts">Mobile Number</Form.Label>
-                        <Form.Label className="popupsd-rights">
-                        {ProductData.transectionid}
-                        </Form.Label>
-                    </Form.Group>
-                    <Form.Group className="form-group inline mb-4">
-                        <Form.Label className="popupsd-lefts">Date</Form.Label>
-                        <Form.Label className="popupsd-rights">
-                        {ProductData?(new Date(ProductData.date?.time)).toLocaleDateString():null}    
-                        </Form.Label>
-                  </Form.Group>
-     
+                  
+                    <Box className="mc-product-upload-organize mb-4">
+                      <LabelField type="text" label="Title" 
+                                  value={ProductData.title}
+                                  onChange={e=>handleInputChange('title', e.target.value)} fieldSize="w-100 h-sm" />
+                     </Box>
+
+                     <Box className="mc-product-upload-organize mb-4">
+                      <LabelTextarea type="text" label="Description"
+                                  value={ProductData.description}
+                                  onChange={e=>handleInputChange('description', e.target.value)} fieldSize="w-100 h-100" />
+                     </Box>
+                     <Box className="mc-product-upload-organize mb-4">
+                      <LabelField type="date" label="Date"
+                                  value={ProductData.date}
+                                  onChange={e=>handleInputChange('date', e.target.value)} fieldSize="w-100 h-sm" />
+                     </Box>
+                     <Box className="mc-product-upload-organize mb-4">
+                      <LabelField type="time" label="Time"
+                                  value={ProductData.time}
+                                  onChange={e=>handleInputChange('time', e.target.value)} fieldSize="w-100 h-sm" />
+                     </Box>
+
+
+                     <Box className="mc-product-upload-organize mb-4">
+              <Button className="mc-btn primary w-100 h-sm mt-4" onClick={updateeventsdata}>Submit</Button>
+                  </Box>
                 </Box>
                 </Modal.Body>
             </Modal>

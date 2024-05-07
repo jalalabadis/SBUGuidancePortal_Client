@@ -1,6 +1,6 @@
 import React, {useEffect, useState } from 'react'
 import PageLayout from "../layouts/PageLayout";
-import {useTicketData,useNotificationsData, useUserData, useAlluserData} from '../Database';
+import {useUserData, useAlluserData, useAllcalendarData} from '../Database';
 import { About, Announcements, CardList, Clearance, ImageSlider, Inventory, Reminders } from '../components/charts';
 import { AdminTable, AppointmentTable, CalendarTable, InventoryTable, StudentTable } from '../components/tables';
 
@@ -8,15 +8,87 @@ import { AdminTable, AppointmentTable, CalendarTable, InventoryTable, StudentTab
 function Dashboard() {
     const userData = useUserData();
     const alluserDatas = useAlluserData();
-    const [alluserData, setAlluserData ]= useState(alluserDatas);
+    const allcalendarDatas = useAllcalendarData();
+    const [alluserData, setAlluserData ]= useState();
+    const [calendarData, setCalendarData ]= useState();
     const PaymentData = [{useremail: "kkkkk", operatorname: "dkkd", amount: 20, status: "dd"}];
-    const Tickets = useTicketData();
-    const Notification = useNotificationsData();
 
 
 useEffect(()=>{
 setAlluserData(alluserDatas);
-},[alluserDatas]);
+setCalendarData(allcalendarDatas);
+},[alluserDatas, allcalendarDatas]);
+
+
+
+
+
+
+
+
+
+// Sort the data by date
+allcalendarDatas?.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+// Initialize variables to keep track of current month and year
+let currentMonth = '';
+let currentYear = '';
+
+// Mapping of month numbers to month names
+const monthNames = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+];
+
+// Array to hold prepared data
+const preparedData = [];
+
+// Function to get weekday name from date
+function getWeekdayName(dateString) {
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const date = new Date(dateString);
+    return days[date.getDay()];
+}
+
+// Iterate through the sorted data
+allcalendarDatas?.forEach(event => {
+    const { title, description, time, date } = event;
+    const [year, month, day] = date.split('-');
+    const monthYear = `${month}-${year}`;
+    const weekname = getWeekdayName(date);
+
+    // Check if month has changed
+    if (monthYear !== `${currentMonth}-${currentYear}`) {
+        // Add spacer for new month
+        preparedData.push({ type: 'spacer', month: monthNames[parseInt(month) - 1], year });
+        currentMonth = month;
+        currentYear = year;
+    }
+
+    // Add event data
+    preparedData.push({ type: 'event', title, description, time, date, weekname, day });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     //** */
@@ -62,13 +134,22 @@ const handleFillter_InputChange = (index, value) => {
         setAlluserData(prevData => [...prevData, data]);
     };
 
+    const updateAllcalendarData = (data) => {
+      setCalendarData(prevData => [...prevData, data]);
+  };
+
+  ///////User Data Onchange
     const updatedData = (newData) => {
     setAlluserData(newData);
   };
   
+  /////Calender Data Onchange
+  const updatedcalendarData = (newData) => {
+    setCalendarData(newData);
+  };
     return (
     <PageLayout 
-    Database={{userData,PaymentData,Tickets, Notification}}
+    Database={{userData,PaymentData, preparedData}}
     >
 
 {(userData?.type!=="admin"&&userData?.type!=="superadmin")&&<ImageSlider slideImages={slideImages} />}
@@ -76,7 +157,7 @@ const handleFillter_InputChange = (index, value) => {
 {(userData?.type!=="admin"&&userData?.type!=="superadmin")&&<Announcements/>}
 {(userData?.type!=="admin"&&userData?.type!=="superadmin")&&<About/>}
 {(userData?.type==="admin"||userData?.type==="superadmin")&&<CardList userData={userData} alluserData={alluserData}
-                    setAlluserData={updateAlluserData}/>}
+                    setAlluserData={updateAlluserData} setCalendarData={updateAllcalendarData}/>}
 
 {userData?.type==="admin"&&<AppointmentTable
   thead = { table.Appointment}
@@ -99,14 +180,16 @@ const handleFillter_InputChange = (index, value) => {
 
 {userData?.type==="superadmin"&&<AdminTable
    thead = { table.Admin}
-   tbody = { PaymentData }
+   tbody = { alluserData }
    fillterValues = { fillterValues }
+   updatedData={updatedData}
    />}
 
 {userData?.type==="superadmin"&&<CalendarTable
    thead = { table.Calendar}
-   tbody = { PaymentData }
+   tbody = { calendarData }
    fillterValues = { fillterValues }
+   updatedcalendarData={updatedcalendarData}
    />}
 
 {userData?.type==="admin"&&<Clearance/>}

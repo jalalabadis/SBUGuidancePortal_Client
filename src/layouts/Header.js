@@ -130,14 +130,7 @@ export default function Header(Database) {
                     />
                  
                     
-                 {Database.Database?.userData&&
-                    <WidgetDropdown 
-                        icon={ NotificationData.icon }
-                        title={ NotificationData.title }
-                        badge={ NotificationData.badge }
-                        addClass={ NotificationData.addClass }
-                        dropdown={ NotificationData.dropdown }
-                    />}
+                 
                     {Database.Database?.userData?
                     <ProfileDropdown 
                         name={ Database.Database?.userData?.userName }

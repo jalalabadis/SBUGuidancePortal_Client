@@ -21,58 +21,47 @@ export default function MenuItem({ item }) {
          
             :
             item.events?
-          <div className="event-calendar">
-    
-  <div className="spacer">May 2024</div>
-  <div className="full-evnrtd">
-  <span className="date-container">
- <span className="date">31<span className="month">may</span></span>
-  </span>
-  <div className="event-list">
-      <div className="event-container">
-        <span className="detail-container">
-          <span className="title">lindenrs rket lindertyss juuytt</span>
-          <span className="timertktys">12:50pm</span>
-        <span className="description">Every other Sunday </span>
-        </span>
-      </div> </div>
-      </div>
 
-      <div className="spacer">May 2024</div>
-  <div className="full-evnrtd">
-  <span className="date-container">
- <span className="date">31<span className="month">may</span></span>
-  </span>
-  <div className="event-list">
-      <div className="event-container">
-        <span className="detail-container">
-          <span className="title">Eid Ul adaha holly</span>
-          <span className="timertktys">12:50pm</span>
-        <span className="description">Every other Sunday </span>
-        </span>
-      </div> </div>
-      </div>
+
+<div className="event-calendar">
+  {item.events?.map((item, index) => (
+    <React.Fragment key={index}>
+      {item.type === "spacer" && (
+        <div className="spacer">
+          {`${item.month} ${item.year}`} {/* Display month and year */}
+        </div>
+      )}
+      {item.type === "event" && (
+        <div className="full-evnrtd mb-1">
+          <span className="date-container">
+            <span className="date">{item.day}<span className="month">{item.weekname}</span></span>
+          </span>
+          <div className="event-list">
+            <div className="event-container">
+              <span className="detail-container">
+                <span className="title">{item.title}</span>
+                <span className="timertktys">{item.time}</span>
+                <span className="description">{item.description}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+    </React.Fragment>
+  ))}
+</div>
 
 
 
-      <div className="spacer"></div>
-  <div className="full-evnrtd">
-  <span className="date-container">
- <span className="date">31<span className="month">may</span></span>
-  </span>
-  <div className="event-list">
-      <div className="event-container">
-        <span className="detail-container">
-          <span className="title">lindenrs rket lindertyss juuytt uyy</span>
-          <span className="timertktys">12:50pm</span>
-        <span className="description">Every other Sunday </span>
-        </span>
-      </div> </div>
-      </div>
-    
-   
-    
-      </div>
+
+
+
+
+
+
+
+
+     
 
             :
             item.Appointment?

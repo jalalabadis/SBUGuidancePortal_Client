@@ -9,7 +9,7 @@ import LabelTextarea from '../fields/LabelTextarea';
 import Cookies  from 'js-cookie';
 
 function CardList({userData, alluserData, setAlluserData, calendarData, setCalendarData,
-  announcementData, setAnnouncementData, inventoryData, setInventoryData
+  announcementData, setAnnouncementData, inventoryData, setInventoryData, appointmentData
 }) {
   const [studentName, setStudentName]=useState('');
   const [studentNumber, setStudentNumber]=useState('');
@@ -183,7 +183,7 @@ else{
          <div className="col-md-6 mb-6">
       <div className="card ">
         <div className="cardlisjkj">
-        <span>Appointment Pending:  500</span> 
+        <span>Appointment Pending:  {appointmentData?.filter(item=> item.status==='Pending').length}</span> 
         </div>
         </div> 
         </div> }

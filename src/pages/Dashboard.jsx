@@ -122,6 +122,7 @@ const updateinventoryData = (data) => {
  calendarData={calendarData} setCalendarData={updateAllcalendarData}
  announcementData={announcementData} setAnnouncementData={updateAllannouncementData}
  inventoryData={inventoryData} setInventoryData={updateinventoryData}
+ appointmentData={appointmentData}
 
  />}
 

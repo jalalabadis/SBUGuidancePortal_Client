@@ -6,7 +6,6 @@ const useUserData = () => {
   const [userData, setUserData] = useState();
 
   useEffect(() => {
-const userDataListener = () => {
   const cookie = Cookies.get('AuthToken');
     if (cookie) { 
       axios.post(`${process.env.REACT_APP_SERVER}/auth/check`, {token: cookie})
@@ -17,11 +16,6 @@ const userDataListener = () => {
         console.log(err);
         Cookies.remove('AuthToken');
       })
-    }
-    };
-
-    return () => {
-      userDataListener();
     };
   }, []);
 

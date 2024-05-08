@@ -6,7 +6,6 @@ const useAlluserData = () => {
   const [alluserData, setAlluserData] = useState();
 
   useEffect(() => {
-const alluserDataListener = ()  => {
     const cookie = Cookies.get('AuthToken');
     if (cookie) { 
     axios.post(`${process.env.REACT_APP_SERVER}/auth/all_user`, {token: cookie})
@@ -16,10 +15,6 @@ const alluserDataListener = ()  => {
     .catch(err=>{
       console.log(err);
     })
-    }
-    };
-    return () => {
-        alluserDataListener();
     };
   }, []);
 

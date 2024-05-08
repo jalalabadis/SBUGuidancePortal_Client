@@ -6,7 +6,11 @@ import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 
 export default function ProfileDropdown({ name, username, image }) {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const hndelLogout= async()=>{
+       await Cookies.remove('AuthToken');
+         navigate('/login');
+    };
     return (
         <Dropdown className="mc-header-user">
             <Dropdown.Toggle className="mc-dropdown-toggle">
@@ -19,11 +23,7 @@ export default function ProfileDropdown({ name, username, image }) {
                     <Anchor
                         icon={'lock'}
                         text={'logout'}
-                        onClick={e=>
-                            {
-                          Cookies.remove('AuthToken');
-                            }
-                        }
+                        onClick={hndelLogout}
                         className="mc-dropdown-menu"
                     />
                 

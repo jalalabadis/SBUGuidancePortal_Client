@@ -1,13 +1,7 @@
-import React, {useEffect, useState } from 'react'
+import React from 'react';
 import PageLayout from "../layouts/PageLayout";
-import {useUserData, useAlluserData, useAllcalendarData, useAllannouncementData} from '../Database';
-import { About, Announcements, CardList, Clearance, ImageSlider, Inventory, Reminders } from '../components/charts';
-import { AdminTable, AppointmentTable, CalendarTable, InventoryTable, StudentTable } from '../components/tables';
+import {useUserData, useAllcalendarData, useAllannouncementData} from '../Database';
 import { eventActivetyData } from '../engine/eventActivety';
-import AnnouncementTable from '../components/tables/AnnouncementTable';
-import useAllInventoryData from '../Database/allInventoryData';
-import useAllappointmentData from '../Database/allappointmentData';
-import PopupReminders from './../components/charts/PopupReminders';
 import { useParams } from 'react-router-dom';
 
 function Announcementpost() {

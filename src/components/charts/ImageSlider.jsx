@@ -3,11 +3,6 @@ import { Slide } from 'react-slideshow-image';
 import 'react-slideshow-image/dist/styles.css'
 
 function ImageSlider({slideImages}) {
-    const spanStyle = {
-        padding: '20px',
-        background: '#efefef',
-        color: '#000000'
-      }
       
       const divStyle = {
         display: 'flex',

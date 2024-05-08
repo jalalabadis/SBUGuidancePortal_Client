@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form } from "react-bootstrap";
 import { Table, Thead, Tbody, Th, Tr, Td } from "../elements/Table";
-import { Button,  Text, Box, Heading} from "../elements";
+import { Box, Heading} from "../elements";
 import Cookies  from 'js-cookie';
 import axios from "axios";
 import { toast } from "react-toastify";

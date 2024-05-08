@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { FaSearch } from "react-icons/fa";
-import { Modal, Form } from "react-bootstrap";
-import { Table, Thead, Tbody, Th, Tr, Td } from "../elements/Table";
-import { Button,  Text, Box, Heading} from "../elements";
+import { Modal} from "react-bootstrap";
+import { Button, Box} from "../elements";
 import LabelField from "../fields/LabelField";
 import Cookies  from 'js-cookie';
 import axios from "axios";
 import { toast } from "react-toastify";
 import LabelTextarea from "../fields/LabelTextarea";
-import { formatTime } from "../../engine/formatTime";
 import { getTimeLeft } from './../../engine/timeLeft';
 
 function Reminders() {
@@ -24,8 +21,10 @@ useEffect(()=>{
   const cookie = Cookies.get('AuthToken');
   axios.post(`${process.env.REACT_APP_SERVER}/reminders`, {token: cookie})
   .then(res=>{
-      setRemindersData(res.data?res.data:remindersData);
+    if(res.data){
+      setRemindersData(res.data);
       setViewModal(false);
+    }
 })
 .catch(err=>{
       toast(err.response?.data?.Message)

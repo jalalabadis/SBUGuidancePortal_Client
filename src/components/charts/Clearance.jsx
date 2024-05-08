@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import { FaSearch } from "react-icons/fa";
-import { Modal, Form } from "react-bootstrap";
-import { Table, Thead, Tbody, Th, Tr, Td } from "../elements/Table";
-import { Button,  Text, Box, Heading} from "../elements";
-import LabelField from "../fields/LabelField";
+import { Modal } from "react-bootstrap";
+import { Button, Box} from "../elements";
 import Cookies  from 'js-cookie';
 import axios from "axios";
 import { toast } from "react-toastify";
 import LabelTextarea from "../fields/LabelTextarea";
-import { formatTime } from "../../engine/formatTime";
 
 function Clearance({userdata}) {
   const [clearanceUser, setClearanceUser]=useState();
@@ -67,7 +64,7 @@ const updateClearancedata=()=>{
  <div className="col-md-4 mb-4">
  <div className="card-body">
    <div className="d-flex align-items-center" style={{gap: '15px'}}>
-     <img src={`https://dummyimage.com/80x80/555555/ffffff&text=${clearanceUser?.email?.split('@')[0]}`} className="rounded-circle img-fluid" style={{width: '55px'}} alt="Profile Image"/>
+     <img src={`https://dummyimage.com/80x80/555555/ffffff&text=${clearanceUser?.email?.split('@')[0]}`} className="rounded-circle img-fluid" style={{width: '55px'}} alt="Profile ss"/>
     <div>
     <p className="card-title">{clearanceUser.userName}</p>
           <p className="card-text">{clearanceUser.Number}</p>

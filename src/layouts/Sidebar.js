@@ -1,12 +1,11 @@
 import React, { useContext} from "react";
-import { MultipleMenu, Logout } from "../components/sidebar";
+import { MultipleMenu } from "../components/sidebar";
 import { DrawerContext } from "../context/Drawer";
 import Section from "../components/elements/Section";
 
 
 export default function Sidebar(Database) {
     const { drawer } = useContext(DrawerContext);
-    console.log(Database.Database.userData)
     const data = {
         "admin": [
           Database.Database?.userData && {

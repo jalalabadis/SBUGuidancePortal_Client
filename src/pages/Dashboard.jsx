@@ -36,20 +36,7 @@ setAppointmentData(allappointmentDatas);
 
 
     //** */
-    const [fillterValues, setFillterValues]=useState({
-        "show_by": "100 row",
-        "type_by": "All",
-        "status_by": "All",
-        "search_by": ""
-    });
-
-///Filter Input changes
-const handleFillter_InputChange = (index, value) => {
-    const newFormValues = { ...fillterValues };
-    newFormValues[index] = value;
-    setFillterValues(newFormValues);
-  };
-
+    const fillterValues={"show_by": "100 row","type_by": "All","status_by": "All","search_by": ""};
     const table =    
     {"Appointment": ["Date", "Name", "Contact", "Status",  "action"],
     "inventory": ["Target", "To",  "Notice", "action"],
@@ -59,7 +46,7 @@ const handleFillter_InputChange = (index, value) => {
     "Announcement": ["Thumbnail", "Title", "Description", "action"]
     };
   
-      const slideImages = [
+   const slideImages = [
         {
           url: 'https://images.unsplash.com/photo-1509721434272-b79147e0e708?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80',
           caption: 'Slide 1'

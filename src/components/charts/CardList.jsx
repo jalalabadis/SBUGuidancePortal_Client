@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Form, Modal } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import { FaPlus } from "react-icons/fa6";
-import { Box, Button, Heading, Icon, Input, Label, Text  } from '../elements';
+import { Box, Button, Icon, Input, Label, Text  } from '../elements';
 import LabelField from './../fields/LabelField';
 import {ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
@@ -27,7 +27,7 @@ function CardList({userData, alluserData, setAlluserData, calendarData, setCalen
   const [description, setDescription]=useState('');
   const [preferredDate, setPreferredDate]=useState('');
     const [preferredTime, setPreferredTime]=useState('');
-    const [uploadFile, setUploadFile] = useState('image upload');
+    const uploadFile = 'image upload';
     const [AnnouncementImageShow, setAnnouncementImageShow]=useState(null);
     const [AnnouncementImage, setAnnouncementImage]=useState(null);
     const [target, setTarget]=useState('Student');

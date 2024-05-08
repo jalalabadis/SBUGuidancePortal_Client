@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Form } from "react-bootstrap";
+import { Modal} from "react-bootstrap";
 import { Table, Thead, Tbody, Th, Tr, Td } from "../elements/Table";
-import { Button,  Text, Box, Heading} from "../elements";
+import { Button,   Box} from "../elements";
 import LabelField from "../fields/LabelField";
 import Cookies  from 'js-cookie';
 import axios from "axios";

@@ -1,9 +1,9 @@
 {
     "logo": {
-        "path": "/dashboard",
-        "src": "/images/logo.webp",
+        "path": "/",
+        "src": "/images/logo.png",
         "alt": "blue",
-        "name": "hotash"
+        "name": "SBU Guidance"
     },
     "toggle": { 
         "open": "menu_open", 

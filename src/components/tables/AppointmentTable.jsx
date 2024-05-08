@@ -2,8 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Modal, Form } from "react-bootstrap";
 import { Table, Thead, Tbody, Th, Tr, Td } from "../elements/Table";
 import { Button,  Text, Box, Heading} from "../elements";
+import Cookies  from 'js-cookie';
+import axios from "axios";
+import { toast } from "react-toastify";
 
-export default function AppointmentTable({ thead, tbody, fillterValues }) {
+export default function AppointmentTable({ thead, tbody, fillterValues, updatedappointmentData }) {
     const [data, setData] = useState([]);
     const [ProductData, setProductData] = React.useState("");
     const [viewModal, setViewModal] = React.useState(false);
@@ -12,6 +15,33 @@ export default function AppointmentTable({ thead, tbody, fillterValues }) {
         setData(tbody); 
     }, [tbody]);
 
+    //////Appprove or cancl
+const handelsubitapps=(itemID, status)=>{
+    const cookie = Cookies.get('AuthToken');
+    axios.post(`${process.env.REACT_APP_SERVER}/appointment/update`, {token: cookie, itemID, status})
+    .then(res=>{
+        console.log(res.data);
+        updatedappointmentData(res.data);
+})
+.catch(err=>{
+        toast(err.response?.data?.Message);
+  });
+
+};
+
+///Delete app
+const deleteUset=(appointmentID)=>{
+    const cookie = Cookies.get('AuthToken');
+    axios.post(`${process.env.REACT_APP_SERVER}/appointment/delete`, {token: cookie, appointmentID})
+    .then(res=>{
+        console.log(res.data);
+        updatedappointmentData(res.data);
+})
+.catch(err=>{
+        toast(err.response?.data?.Message)
+  });
+
+};
     return (
       <div className='content-mart'>
   <p>Student Appointment</p>
@@ -26,25 +56,33 @@ export default function AppointmentTable({ thead, tbody, fillterValues }) {
                     </Tr>
                 </Thead>
                 <Tbody className="mc-table-body even">
-                    {data?.sort((a,b)=>b.date.time-a.date.time).filter(
-                item=>item.useremail?.toLowerCase().includes(fillterValues.search_by) &&
-                item.operatorname.includes(fillterValues.type_by.replace("All", "")) && 
-                item.status?.toLowerCase().includes(fillterValues.status_by.replace("All", ""))).map((item, index) => (
+                    {data?.sort((a, b) => b.Mstimer - a.Mstimer).map((item, index) => (
                         <Tr key={ index }> 
-                            <Td title={ item.useremail }>{ item.useremail }</Td>
-                            <Td title={ item.operatorname }>{ item.operatorname }</Td>
+                            <Td title={ item.date }>{ item.date }<br/>
+                            {item.preferred}
+                            </Td>
+                            <Td title={ item.name }>{ item.name }</Td>
                             
-                            <Td title={ item.amount }>{ item.amount.toFixed(2) }৳</Td>
+                            <Td title={ item.contact }>{ item.contact }</Td>
                             <Td title={ item.status }>{ item.status }</Td>
                             <Td className="text-end">
+                                {item.status==="Pending"?
                                 <Box className="mc-table-action ">
                                     <button  style={{background: "#59E970", padding: "12px"}}
-                                    onClick={()=> setViewModal(true, setProductData(item))}>Approve
+                                    onClick={()=> handelsubitapps(item._id, 'Approve')}>Approve
                                     </button>
                                     <button  style={{background: "#F61919", padding: "12px"}}
-                                    onClick={()=> setViewModal(true, setProductData(item))}>Cancel
+                                    onClick={()=>  handelsubitapps(item._id, 'Cancel')}>Cancel
                                     </button>
-                                </Box>
+                                </Box>:
+                                <Box className="mc-table-action ">
+                                <button  style={{background: "#F61919", padding: "12px"}}
+                                onClick={()=> deleteUset(item._id)}>Delete
+                                </button>
+                            </Box>
+                            
+                            }
+
                             </Td>
                         </Tr>
                     ))}

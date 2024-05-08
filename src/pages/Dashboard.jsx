@@ -6,6 +6,8 @@ import { AdminTable, AppointmentTable, CalendarTable, InventoryTable, StudentTab
 import { eventActivetyData } from '../engine/eventActivety';
 import AnnouncementTable from '../components/tables/AnnouncementTable';
 import useAllInventoryData from '../Database/allInventoryData';
+import useAllappointmentData from '../Database/allappointmentData';
+import PopupReminders from './../components/charts/PopupReminders';
 
 
 function Dashboard() {
@@ -14,19 +16,22 @@ function Dashboard() {
     const allcalendarDatas = useAllcalendarData();
     const allannouncementDatas = useAllannouncementData();
     const allinventoryDatas = useAllInventoryData();
+    const allappointmentDatas = useAllappointmentData();
     const [alluserData, setAlluserData ]= useState();
     const [calendarData, setCalendarData ]= useState();
     const [announcementData, setAnnouncementData ]= useState();
     const [inventoryData, setInventoryData ]= useState();
-    const PaymentData = [{useremail: "kkkkk", operatorname: "dkkd", amount: 20, status: "dd"}];
+    const [appointmentData, setAppointmentData ]= useState();
     const preparedData = eventActivetyData(allcalendarDatas);
+    const IndividualInventory = allinventoryDatas?.filter(item=> parseFloat(item.to)===userData?.Number || item.to===userData?.Section|| item.to===userData?.Department);
 
 useEffect(()=>{
 setAlluserData(alluserDatas);
 setCalendarData(allcalendarDatas);
 setAnnouncementData(allannouncementDatas);
 setInventoryData(allinventoryDatas);
-},[alluserDatas, allcalendarDatas, allannouncementDatas, allinventoryDatas]);
+setAppointmentData(allappointmentDatas);
+},[alluserDatas, allcalendarDatas, allannouncementDatas, allinventoryDatas, allappointmentDatas]);
 
 
 
@@ -70,6 +75,10 @@ const handleFillter_InputChange = (index, value) => {
       ];
 
 
+
+
+      /////////
+
     const updateAlluserData = (data) => {
         setAlluserData(prevData => [...prevData, data]);
     };
@@ -105,15 +114,22 @@ const updateinventoryData = (data) => {
    const updatedinventoryData = (newData) => {
     setInventoryData(newData);
   };
+
+     /////appointment Data Onchange
+     const updatedappointmentData = (newData) => {
+      setAppointmentData(newData);
+    };
     return (
     <PageLayout 
-    Database={{userData,PaymentData, preparedData}}
+    Database={{userData, preparedData}}
     >
 
 {(userData?.type!=="admin"&&userData?.type!=="superadmin")&&<ImageSlider slideImages={slideImages} />}
-{userData?.type==='student'&&<Inventory/>}
+{userData?.type==='student'&&<Inventory data={IndividualInventory}/>}
 {(userData?.type!=="admin"&&userData?.type!=="superadmin")&&<Announcements data={announcementData} />}
 {(userData?.type!=="admin"&&userData?.type!=="superadmin")&&<About/>}
+{userData?.type==='student'&&<PopupReminders />}
+
 {(userData?.type==="admin"||userData?.type==="superadmin")&&<CardList userData={userData}
  alluserData={alluserData} setAlluserData={updateAlluserData} 
  calendarData={calendarData} setCalendarData={updateAllcalendarData}
@@ -124,8 +140,9 @@ const updateinventoryData = (data) => {
 
 {userData?.type==="admin"&&<AppointmentTable
   thead = { table.Appointment}
-   tbody = { PaymentData }
+   tbody = { appointmentData }
    fillterValues = { fillterValues }
+   updatedappointmentData={updatedappointmentData}
    />}
 
 {userData?.type==="admin"&&<InventoryTable
@@ -164,7 +181,7 @@ const updateinventoryData = (data) => {
    updatedcalendarData={updatedcalendarData}
    />}
 
-{userData?.type==="admin"&&<Clearance/>}
+{userData?.type==="admin"&&<Clearance userdata={alluserData}/>}
 
 {userData?.type==="admin"&&<Reminders/>}
 

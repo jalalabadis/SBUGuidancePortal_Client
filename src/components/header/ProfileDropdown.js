@@ -15,13 +15,7 @@ export default function ProfileDropdown({ name, username, image }) {
             </Dropdown.Toggle>
             <Dropdown.Menu align="end" className="mc-dropdown-paper">
                 
-            <Anchor
-                        icon={'privacy_tip'}
-                        text={'reset password'}
-                        href={'/forgot-password'}
-                        className="mc-dropdown-menu"
-
-                    />
+            
                     <Anchor
                         icon={'lock'}
                         text={'logout'}

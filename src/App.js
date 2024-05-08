@@ -5,6 +5,7 @@ import './App.css';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Error from "./pages/Error";
+import Announcementpost from "./pages/Announcementpost";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
 <BrowserRouter>
         <Routes>
           <Route path="/" element={<Dashboard/>} />
+          <Route path="/announcement/:id" element={<Announcementpost/>} />
           <Route path="/login" element={<Login/>} />
           <Route path="*" element={<Error />} />
         </Routes>

@@ -14,80 +14,10 @@ export default function Header(Database) {
     const searchRef = useRef();
     const [scroll, setScroll] = useState("fixed");
     const [search, setSearch] = useState("");
-    ///Payment Data
-    const PendingPayment =Database.Database?.PaymentData?.filter(item=>item.status==='pending').length<=9?
-    "0"+Database.Database?.PaymentData?.filter(item=>item.status==='pending').length:"9+";
-    const PaymentITEM = Database.Database?.PaymentData?.filter(item=>item.status==='pending').map(item=>{return {
-        ...item,
-        product: {
-            "images": ["images/tools/sendicon.png"],
-        },
-        path: "/order-list"
-    }});
-    const PendingPaymentData =   {
-        "icon": "shopping_cart", 
-        "title": "Shopping",  
-        "addClass": "cart",   
-        "badge": { "text": PendingPayment, "variant": "primary" },
-        "dropdown": {
-            "title": "Orders",
-            "button": { 
-                "path": "/order-list", 
-                "label": "view all order" 
-            },
-            "items": PaymentITEM
-        }
-    };
 
-     ///Tickets Data
-     const TicketsCount =Database.Database?.Tickets?.length<=9?
-     "0"+Database.Database?.Tickets?.length:"9+";
-     const TicketsITEM = Database.Database?.Tickets?.map(item=>{return {
-        ...item,
-        product: {
-            "images": ["/images/logo.webp"],
-        },
-        path: "/ticket"
-    }});
-     const TicketsData =   {
-         "icon": "email", 
-         "title": "Message",  
-         "addClass": "cart",   
-         "badge": { "text": TicketsCount, "variant": "primary" },
-         "dropdown": {
-             "title": "Tickets",
-             "button": { 
-                 "path": "/ticket", 
-                 "label": "view all tickets" 
-             },
-             "items": TicketsITEM
-         }
-     };
+   
 
-       ///Notification Data
-       const NotificationCount =Database.Database?.Notification?.length<=9?
-       "0"+Database.Database?.Notification?.length:"9+";
-       const NotificationITEM = Database.Database?.Notification?.map(item=>{return {
-        ...item,
-        product: {
-            "images": [item.image],
-        },
-        path: "/notification"
-    }});
-       const NotificationData =   {
-           "icon": "notifications", 
-           "title": "notification",  
-           "addClass": "cart",   
-           "badge": { "text": NotificationCount, "variant": "primary" },
-           "dropdown": {
-               "title": "Notifications",
-               "button": { 
-                   "path": "/notification", 
-                   "label": "view all notifications" 
-               },
-               "items": NotificationITEM
-           }
-       };
+
 
     window.addEventListener('scroll', () => {
         if (window.pageYOffset > 0) setScroll("sticky");
@@ -134,7 +64,7 @@ export default function Header(Database) {
                     {Database.Database?.userData?
                     <ProfileDropdown 
                         name={ Database.Database?.userData?.userName }
-                        image={ data.profile.image }
+                        image={`https://dummyimage.com/80x80/555555/ffffff&text=${Database.Database?.userData?.email?.split('@')[0]}`}
                         username={"@"+ Database.Database?.userData?.email?.split('@')[0] }
                         dropdown={ data.profile.dropdown }
                     />:

@@ -176,7 +176,10 @@ color: #FFFCFC;
     padding: 0 16px 16px 16px;
   width: 350px;
   }
- 
+  .costomize-popup-hkjs2{
+    padding: 0 16px 16px 16px;
+  width: 500px;
+  }
 /* Table  */
 .tablecustopmy-poly td{
   font-family: 'Baloo 2', cursive;

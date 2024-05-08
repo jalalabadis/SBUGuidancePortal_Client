@@ -11,3 +11,22 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@media only screen and (max-width: 600px) {
+  .costomize-popup-hkjs2{
+width: 350px;
+  }
+ .poport_remainers .popresss_kkksssss{
+    font-size: 18px;
+  }
+
+  .poport_remainers .ssespan{
+font-size: 15px;
+font-weight: 100;
+  }
+
+  .poport_remainers .leftssespan{
+    font-size: 22px;
+    font-weight: 500;
+      }
+}

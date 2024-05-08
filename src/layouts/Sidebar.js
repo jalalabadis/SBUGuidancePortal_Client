@@ -6,6 +6,7 @@ import Section from "../components/elements/Section";
 
 export default function Sidebar(Database) {
     const { drawer } = useContext(DrawerContext);
+    console.log(Database.Database.userData)
     const data = {
         "admin": [
           Database.Database?.userData && {
@@ -13,7 +14,7 @@ export default function Sidebar(Database) {
             "menu": [
               {
                 "profile": {
-                  "avater": "http://placehold.it/300x300",
+                  "avater": `https://dummyimage.com/80x80/555555/ffffff&text=${Database.Database?.userData?.email?.split('@')[0]}`,
                   "Username": Database.Database.userData.userName,
                   "UserID": Database.Database.userData.Number,
                   "Department": `${Database.Database.userData.Section}, 
@@ -38,7 +39,7 @@ export default function Sidebar(Database) {
           Database.Database?.userData?.type==='student' && {
             "title": "Clearance of Requirements",
             "menu": [
-              { "Requirements": "kkkkjjjs" }
+              { "Requirements": Database.Database.userData.Notice }
             ]
           }
         ].filter(Boolean), // Filter out undefined items

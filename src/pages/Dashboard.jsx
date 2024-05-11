@@ -3,7 +3,6 @@ import PageLayout from "../layouts/PageLayout";
 import {useUserData, useAlluserData, useAllcalendarData, useAllannouncementData} from '../Database';
 import { About, Announcements, CardList, Clearance, ImageSlider, Inventory, Reminders } from '../components/charts';
 import { AdminTable, AppointmentTable, CalendarTable, InventoryTable, StudentTable } from '../components/tables';
-import { eventActivetyData } from '../engine/eventActivety';
 import AnnouncementTable from '../components/tables/AnnouncementTable';
 import useAllInventoryData from '../Database/allInventoryData';
 import useAllappointmentData from '../Database/allappointmentData';
@@ -22,7 +21,6 @@ function Dashboard() {
     const [announcementData, setAnnouncementData ]= useState();
     const [inventoryData, setInventoryData ]= useState();
     const [appointmentData, setAppointmentData ]= useState();
-    const preparedData = eventActivetyData(allcalendarDatas);
     const IndividualInventory = allinventoryDatas?.filter(item=> parseFloat(item.to)===userData?.Number || item.to===userData?.Section|| item.to===userData?.Department);
 
 useEffect(()=>{
@@ -34,7 +32,6 @@ setAppointmentData(allappointmentDatas);
 },[alluserDatas, allcalendarDatas, allannouncementDatas, allinventoryDatas, allappointmentDatas]);
 
 
-
     //** */
     const fillterValues={"show_by": "100 row","type_by": "All","status_by": "All","search_by": ""};
     const table =    
@@ -42,7 +39,7 @@ setAppointmentData(allappointmentDatas);
     "inventory": ["Target", "To",  "Notice", "action"],
     "Student": ["Name", "Number", "Section", "Course", "Department", "action"],
     "Admin": ["Name", "Number", "Department", "action"],
-    "Calendar": ["Time", "Title", "Description", "action"],
+    "Calendar": ["Time", "Title", "Description", "Attended", "Not attended", "action"],
     "Announcement": ["Thumbnail", "Title", "Description", "action"]
     };
   
@@ -108,7 +105,7 @@ const updateinventoryData = (data) => {
     };
     return (
     <PageLayout 
-    Database={{userData, preparedData}}
+    Database={{userData, calendarData}} updatedcalendarData={updatedcalendarData}
     >
 
 {(userData?.type!=="admin"&&userData?.type!=="superadmin")&&<ImageSlider slideImages={slideImages} />}
@@ -165,6 +162,7 @@ const updateinventoryData = (data) => {
 {userData?.type==="superadmin"&&<CalendarTable
    thead = { table.Calendar}
    tbody = { calendarData }
+   tbodyuser = {alluserData?.filter(item=> item.type==='student').length}
    fillterValues = { fillterValues }
    updatedcalendarData={updatedcalendarData}
    />}

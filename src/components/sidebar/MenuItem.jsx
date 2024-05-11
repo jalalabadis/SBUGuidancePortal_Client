@@ -5,7 +5,7 @@ import Cookies  from 'js-cookie';
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 
-export default function MenuItem({ item }) {
+export default function MenuItem({ item, updatedcalendarData }) {
     const [active, setActive] = React.useState(false);
     const [date, setDate]=useState();
     const [contact, setContact]=useState('');
@@ -14,6 +14,23 @@ export default function MenuItem({ item }) {
     const handleCheckboxChange = (value) => {
       setPreferred(preferred === value ? '' : value);
   };
+
+  ////ছাত্র-ছাত্রী ইভেন্টে যোগ হবে
+  const handelsubmission=(calendarID)=>{
+    console.log(calendarID);
+    const cookie = Cookies.get('AuthToken');
+    axios.post(`${process.env.REACT_APP_SERVER}/calendar/submission`, {token: cookie, calendarID})
+    .then(res=>{
+        console.log(res.data);
+        updatedcalendarData(res.data);
+})
+.catch(err=>{
+        toast(err.response?.data?.Message)
+  });
+
+  };
+
+  /////////ছাত্র-ছাত্রী অ্যাপার্টমেন্ট জমা দিবে
     const handelsubmits=(event)=>{
       event.preventDefault();
       const cookie = Cookies.get('AuthToken');
@@ -55,25 +72,35 @@ export default function MenuItem({ item }) {
 
 
 <div className="event-calendar">
-  {item.events?.map((item, index) => (
+  {item.events?.map((eventitem, index) => (
     <React.Fragment key={index}>
-      {item.type === "spacer" && (
+      {eventitem.type === "spacer" && (
         <div className="spacer">
-          {`${item.month} ${item.year}`} {/* Display month and year */}
+          {`${eventitem.month} ${eventitem.year}`} {/* Display month and year */}
         </div>
       )}
-      {item.type === "event" && (
+      {eventitem.type === "event" && (
         <div className="full-evnrtd mb-1">
           <span className="date-container">
-            <span className="date">{item.day}<span className="month">{item.weekname}</span></span>
+            <span className="date">{eventitem.day}<span className="month">{eventitem.weekname}</span></span>
           </span>
           <div className="event-list">
             <div className="event-container">
               <span className="detail-container">
-                <span className="title">{item.title}</span>
-                <span className="timertktys">{formatTime(item.time)}</span>
-                <span className="description">{item.description}</span>
+                <span className="title">{eventitem.title}</span>
+                <span className="description">{eventitem.description}</span>
               </span>
+              <span className="timertktys">{formatTime(eventitem.time)}</span>
+              {item.profile_data?.type==="student"&&
+              <>
+              {eventitem.submission.includes(item.profile_data?._id)?
+               <button className="btn submissitokjt" style={{background: '#253f1570'}}>Joined</button>:
+              <button onClick={e=>handelsubmission(eventitem._id)}
+              className="btn submissitokjt" style={{background: '#253f1570'}}>Submission</button>
+             
+            }
+              
+              </>}
             </div>
           </div>
         </div>

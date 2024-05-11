@@ -2,7 +2,7 @@ import React from "react";
 import MenuItem from "./MenuItem";
 import { List, Menu, Heading } from "../elements";
 
-export default function MultipleMenu({ data }) {
+export default function MultipleMenu({ data, updatedcalendarData }) {
 
     return (
         <>
@@ -15,6 +15,7 @@ export default function MultipleMenu({ data }) {
                             <MenuItem 
                                 key = { index } 
                                 item = { item } 
+                                updatedcalendarData={updatedcalendarData}
                             />  
                         ))}
                     </List>

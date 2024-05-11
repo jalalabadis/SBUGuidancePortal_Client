@@ -61,6 +61,18 @@ top: 0;
 right: 15px;
 }
 
+.submissitokjt{
+  pointer-events: auto;
+  position: absolute;
+  font-size: 10px;
+  color: rgb(255, 255, 255);
+  padding: 0 12px;
+  border-radius: 6px;
+  background: #253f1570;
+  bottom: 5px;
+  right: 15px;
+  }
+
 .event-container:hover {
   border-left-width: 7px;
   background:#ECEFF1;

@@ -9,11 +9,12 @@ import { toast } from "react-toastify";
 import LabelTextarea from "../fields/LabelTextarea";
 import { formatTime } from "../../engine/formatTime";
 
-export default function CalendarTable({ thead, tbody, fillterValues, updatedcalendarData }) {
+export default function CalendarTable({ thead, tbody, tbodyuser, fillterValues, updatedcalendarData }) {
     const [data, setData] = useState([]);
     const [ProductData, setProductData] = React.useState("");
+    const [studentData, setStudentDataData] = React.useState(null);
     const [viewModal, setViewModal] = React.useState(false);
-
+    const [viewTable, setViewTable] = React.useState(false);
     useEffect(()=> {
         setData(tbody); 
     }, [tbody]);
@@ -51,6 +52,20 @@ const deleteUset=(calendarID)=>{
 
 };
 
+      ////attended StudentDatas
+      const handelattendedStudentdata=(calendarID)=>{
+        setViewTable(true);
+        axios.post(`${process.env.REACT_APP_SERVER}/calendar/attended`, {calendarID})
+        .then(res=>{
+            console.log(res.data[0]?.submission);
+            setStudentDataData(res.data[0]?.submission);
+    })
+    .catch(err=>{
+            toast(err.response?.data?.Message)
+      });
+    
+      };
+
 return (
       <div className='content-mart'>
   <p>Calendar</p>
@@ -71,6 +86,10 @@ return (
                             <Td title={ item.title }>{ item.title }</Td>
                             
                             <Td title={ item.description }>{ item.description }</Td>
+
+                            <Td><button onClick={e=> handelattendedStudentdata(item._id)}>{ item.submission.length }
+                                </button></Td>
+                            <Td>{tbodyuser- item.submission.length }</Td>
                             
                             <Td className="text-end">
                                 <Box className="mc-table-action ">
@@ -104,7 +123,7 @@ return (
                      <Box className="mc-product-upload-organize mb-4">
                       <LabelTextarea type="text" label="Description"
                                   value={ProductData.description}
-                                  onChange={e=>handleInputChange('description', e.target.value)} fieldSize="w-100 h-100" />
+                                  onChange={e=>handleInputChange('description', e.target.value)} fieldSize="w-100 h-lg" />
                      </Box>
                      <Box className="mc-product-upload-organize mb-4">
                       <LabelField type="date" label="Date"
@@ -125,6 +144,39 @@ return (
                 </Modal.Body>
             </Modal>
 
+            <Modal show={ viewTable } onHide={()=> setViewTable(false, setStudentDataData())}>
+            <Modal.Header closeButton style={{margin: '0', padding: '10px 10px 0 0' }}/>
+            <Modal.Body className={'costomize-popup-hkjs'}>
+                <Box>
+
+{studentData!==null&&
+    <Box className="mc-table-responsive mt-4">
+                <table className="mc-table tablecustopmy-poly">
+                <thead className="mc-table-head kljjj_tables">
+                    <tr>
+                            <th>Name</th>
+                            <th>Number</th>
+                            <th>Section</th>
+                            <th>Email</th>
+                
+                    </tr>
+                </thead>
+                <tbody className="mc-table-body even">
+                    {studentData?.sort((a, b) => b.Mstimer - a.Mstimer).map((item, index) => (
+                        <tr key={ index }> 
+                        <td>{item.userName}</td>
+                        <td>{item.Number}</td>
+                        <td>{item.Section}</td>
+                        <td>{item.email}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+            </Box>}
+
+                </Box>
+                </Modal.Body>
+            </Modal>
 
 
 

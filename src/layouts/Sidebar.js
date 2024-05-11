@@ -2,23 +2,24 @@ import React, { useContext} from "react";
 import { MultipleMenu } from "../components/sidebar";
 import { DrawerContext } from "../context/Drawer";
 import Section from "../components/elements/Section";
+import { eventActivetyData } from "../engine/eventActivety";
 
 
-export default function Sidebar(Database) {
+export default function Sidebar({Database, updatedcalendarData}) {
     const { drawer } = useContext(DrawerContext);
     const data = {
         "admin": [
-          Database.Database?.userData && {
+          Database?.userData && {
             "title": "Profile",
             "menu": [
               {
                 "profile": {
-                  "avater": `https://dummyimage.com/80x80/555555/ffffff&text=${Database.Database?.userData?.email?.split('@')[0]}`,
-                  "Username": Database.Database.userData.userName,
-                  "UserID": Database.Database.userData.Number,
-                  "Department": `${Database.Database.userData.Section}, 
-                                  ${Database.Database.userData.Course} & 
-                                  ${Database.Database.userData.Department}`
+                  "avater": `https://dummyimage.com/80x80/555555/ffffff&text=${Database?.userData?.email?.split('@')[0]}`,
+                  "Username": Database?.userData.userName,
+                  "UserID": Database?.userData.Number,
+                  "Department": `${Database?.userData.Section}, 
+                                  ${Database?.userData.Course} & 
+                                  ${Database?.userData.Department}`
                 }
               }
             ]
@@ -26,19 +27,19 @@ export default function Sidebar(Database) {
           {
             "title": "Calendar of Activities",
             "menu": [
-              { "events": Database.Database.preparedData }
+              { "events": eventActivetyData(Database?.calendarData), "profile_data": Database?.userData }
             ]
           },
-          Database.Database?.userData?.type==='student' && {
+          Database?.userData?.type==='student' && {
             "title": "Book an Appointment",
             "menu": [
               { "Appointment": true }
             ]
           },
-          Database.Database?.userData?.type==='student' && {
+          Database?.userData?.type==='student' && {
             "title": "Clearance of Requirements",
             "menu": [
-              { "Requirements": Database.Database.userData.Notice }
+              { "Requirements": Database?.userData.Notice }
             ]
           }
         ].filter(Boolean), // Filter out undefined items
@@ -46,7 +47,7 @@ export default function Sidebar(Database) {
       };
     return (
         <Section as="aside" className={`mc-sidebar thin-scrolling ${ drawer ? "active" : "" }`}>
-            <MultipleMenu data={data.admin}  />
+            <MultipleMenu data={data.admin} updatedcalendarData={updatedcalendarData}  />
         </Section>
     )
 }

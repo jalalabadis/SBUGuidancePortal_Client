@@ -25,7 +25,7 @@ function getWeekdayName(dateString) {
 
 // Iterate through the sorted data
 allcalendarDatas?.forEach(event => {
-    const { title, description, time, date } = event;
+    const {_id, submission, title, description, time, date } = event;
     const [year, month, day] = date.split('-');
     const monthYear = `${month}-${year}`;
     const weekname = getWeekdayName(date);
@@ -39,8 +39,9 @@ allcalendarDatas?.forEach(event => {
     }
 
     // Add event data
-    preparedData.push({ type: 'event', title, description, time, date, weekname, day });
+    preparedData.push({ _id, submission, type: 'event', title, description, time, date, weekname, day });
 });
 
+//console.log(preparedData);
 return preparedData;
 }

@@ -51,6 +51,11 @@ export default function MenuItem({ item, updatedcalendarData }) {
     toast("Fill all info");
   }
     };
+
+
+
+
+
     return (
         <Item className={`mc-sidebar-menu-item ${active ? "active" : ""}`} onClick = {()=> setActive(!active)}>
             {item.profile ?
@@ -71,43 +76,52 @@ export default function MenuItem({ item, updatedcalendarData }) {
             item.events?
 
 
+// Assuming formattedData is the output from eventActivetyData function
+
 <div className="event-calendar">
-  {item.events?.map((eventitem, index) => (
-    <React.Fragment key={index}>
-      {eventitem.type === "spacer" && (
+  {item.events?.map(monthData => {
+    const monthYear = Object.keys(monthData)[0];
+    const events = monthData[monthYear];
+
+    // Sort events within each month-year group by Mstimer
+    events.sort((a, b) => b.Mstimer - a.Mstimer);
+
+    return (
+      <React.Fragment key={monthYear}>
         <div className="spacer">
-          {`${eventitem.month} ${eventitem.year}`} {/* Display month and year */}
+          {monthYear} {/* Display month and year */}
         </div>
-      )}
-      {eventitem.type === "event" && (
-        <div className="full-evnrtd mb-1">
-          <span className="date-container">
-            <span className="date">{eventitem.day}<span className="month">{eventitem.weekname}</span></span>
-          </span>
-          <div className="event-list">
-            <div className="event-container">
-              <span className="detail-container">
-                <span className="title">{eventitem.title}</span>
-                <span className="description">{eventitem.description}</span>
-              </span>
-              <span className="timertktys">{formatTime(eventitem.time)}</span>
-              {item.profile_data?.type==="student"&&
-              <>
-              {eventitem.submission.includes(item.profile_data?._id)?
-               <button className="btn submissitokjt" style={{background: '#253f1570'}}>Joined</button>:
-              <button onClick={e=>handelsubmission(eventitem._id)}
-              className="btn submissitokjt" style={{background: '#253f1570'}}>Submission</button>
-             
-            }
-              
-              </>}
+        {events.map((eventitem, index) => (
+          <div className="full-evnrtd mb-1" key={index}>
+            <span className="date-container">
+              <span className="date">{eventitem.day}<span className="month">{eventitem.weekname}</span></span>
+            </span>
+            <div className="event-list">
+              <div className="event-container">
+                <span className="detail-container">
+                  <span className="title">{eventitem.title}</span>
+                  <span className="description">{eventitem.description}</span>
+                </span>
+                <span className="timertktys">{formatTime(eventitem.time)}</span>
+                {item.profile_data?.type==="student"&&
+                <>
+                {eventitem.submission.includes(item.profile_data?._id)?
+                 <button className="btn submissitokjt" style={{background: 'rgba(21, 99, 34, 0.753)'}}>Attended</button>:
+                <button onClick={e=>handelsubmission(eventitem._id)}
+                className="btn submissitokjt" style={{background: '#253f1570'}}>Submission</button>
+               
+              }
+                
+                </>}
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </React.Fragment>
-  ))}
+        ))}
+      </React.Fragment>
+    );
+  })}
 </div>
+
 
 
 
@@ -151,7 +165,7 @@ export default function MenuItem({ item, updatedcalendarData }) {
                     type="checkbox"
                     className="form-check-input"
                 />
-                Morning
+                 <span> Morning</span>
             </span>
             <span>
                 <input
@@ -160,7 +174,7 @@ export default function MenuItem({ item, updatedcalendarData }) {
                     type="checkbox"
                     className="form-check-input"
                 />
-                Afternoon
+               <span> Afternoon</span>
             </span>
         </div>
         </div>

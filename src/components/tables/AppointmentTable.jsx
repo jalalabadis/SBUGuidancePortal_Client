@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form } from "react-bootstrap";
 import { Table, Thead, Tbody, Th, Tr, Td } from "../elements/Table";
-import { Box, Heading} from "../elements";
+import { Box, Heading, Text} from "../elements";
 import Cookies  from 'js-cookie';
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -64,7 +64,8 @@ const deleteUset=(appointmentID)=>{
                             <Td title={ item.name }>{ item.name }</Td>
                             
                             <Td title={ item.contact }>{ item.contact }</Td>
-                            <Td title={ item.status }>{ item.status }</Td>
+                            <Td title={ item.status }><Text className={`mc-table-badge ${item.status==="Pending"? "purple" :item.status==="Approve"?"green":"red"}`}>
+                                { item.status }</Text></Td>
                             <Td className="text-end">
                                 {item.status==="Pending"?
                                 <Box className="mc-table-action ">

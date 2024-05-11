@@ -1,22 +1,43 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PageLayout from "../layouts/PageLayout";
 import {useUserData, useAllcalendarData, useAllannouncementData} from '../Database';
-import { eventActivetyData } from '../engine/eventActivety';
 import { useParams } from 'react-router-dom';
+import { Col, Row } from 'react-bootstrap';
+import { Breadcrumb } from '../components';
+import CardLayout from '../components/cards/CardLayout';
 
 function Announcementpost() {
     const {id}=useParams();
     const userData = useUserData();
     const allcalendarDatas = useAllcalendarData();
-    const preparedData = eventActivetyData(allcalendarDatas);
+    const [calendarData, setCalendarData ]= useState();
     const allannouncementDatas = useAllannouncementData();
-console.log(id)
-    const currentAnnouncement = allannouncementDatas?.filter(item=> item._id===id)
-    console.log(currentAnnouncement)
+    const currentAnnouncement = allannouncementDatas?.filter(item=> item._id===id);
+    
+
+    useEffect(()=>{
+      setCalendarData(allcalendarDatas);
+      },[allcalendarDatas]);
+  
+  
+    /////Calender Data Onchange
+    const updatedcalendarData = (newData) => {
+      setCalendarData(newData);
+    };
+  
   return (
     <PageLayout 
-    Database={{userData, preparedData}}
+    Database={{userData, calendarData}} updatedcalendarData={updatedcalendarData}
     >
+      <Row>
+                <Col xl={12}>
+          <Breadcrumb title={"Announcement"}>
+      
+          
+                    </Breadcrumb>
+                </Col>
+                <Col xl={12}>
+<CardLayout>
         {currentAnnouncement?.length>0?
         <div className='mt-1' style={{display: 'flex', flexDirection: "column", alignItems: 'center', minHeight: '100vh'}}>
  
@@ -29,6 +50,9 @@ console.log(id)
         <h5>Announcement Not Nound</h5>   
         </div>
         }
+       </CardLayout>
+</Col>
+                </Row>
        
 
         </PageLayout>

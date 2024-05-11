@@ -1,47 +1,66 @@
+export const eventActivetyData = (allcalendarDatas) => {
+    // Mapping of month numbers to month names
+    const monthNames = [
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
 
-export const eventActivetyData=(allcalendarDatas)=>{
-    // Sort the data by date
-allcalendarDatas?.sort((a, b) => new Date(a.date) - new Date(b.date));
+    // Initialize an object to hold events grouped by month and year
+    const groupedEvents = {};
 
-// Initialize variables to keep track of current month and year
-let currentMonth = '';
-let currentYear = '';
-
-// Mapping of month numbers to month names
-const monthNames = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-];
-
-// Array to hold prepared data
-const preparedData = [];
-
-// Function to get weekday name from date
-function getWeekdayName(dateString) {
-    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const date = new Date(dateString);
-    return days[date.getDay()];
-}
-
-// Iterate through the sorted data
-allcalendarDatas?.forEach(event => {
-    const {_id, submission, title, description, time, date } = event;
-    const [year, month, day] = date.split('-');
-    const monthYear = `${month}-${year}`;
-    const weekname = getWeekdayName(date);
-
-    // Check if month has changed
-    if (monthYear !== `${currentMonth}-${currentYear}`) {
-        // Add spacer for new month
-        preparedData.push({ type: 'spacer', month: monthNames[parseInt(month) - 1], year });
-        currentMonth = month;
-        currentYear = year;
+    // Function to get weekday name from date
+    function getWeekdayName(dateString) {
+        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const date = new Date(dateString);
+        return days[date.getDay()];
     }
 
-    // Add event data
-    preparedData.push({ _id, submission, type: 'event', title, description, time, date, weekname, day });
-});
+    // Iterate through the data
+    allcalendarDatas?.forEach(event => {
+        const { _id, Mstimer, submission, title, description, time, date } = event;
+        const [year, month, day] = date.split('-');
+        const monthYear = `${monthNames[parseInt(month) - 1]} ${year}`;
+        const weekname = getWeekdayName(date);
 
-//console.log(preparedData);
-return preparedData;
+        // Create an array for the month if it doesn't exist
+        if (!groupedEvents[monthYear]) {
+            groupedEvents[monthYear] = [];
+        }
+
+        // Add event data to the array for the month
+        groupedEvents[monthYear].push({
+            _id,
+            submission,
+            Mstimer,
+            type: 'event',
+            title,
+            description,
+            time,
+            date,
+            month: monthNames[parseInt(month) - 1],
+            year,
+            weekname,
+            day
+        });
+    });
+
+    // Convert the groupedEvents object into an array of objects
+    const formattedData = Object.keys(groupedEvents).map(key => ({
+        [key]: groupedEvents[key]
+    }));
+
+    // Sort the formattedData array by month and year
+    formattedData.sort((a, b) => {
+        const [monthA, yearA] = Object.keys(a)[0].split(' ');
+        const [monthB, yearB] = Object.keys(b)[0].split(' ');
+
+        // Sort by year first
+        if (yearA !== yearB) {
+            return yearB - yearA;
+        }
+        // If years are the same, sort by month
+        return monthNames.indexOf(monthB) - monthNames.indexOf(monthA);
+    });
+
+    return formattedData;
 }

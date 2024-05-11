@@ -23,6 +23,7 @@ function Dashboard() {
     const [appointmentData, setAppointmentData ]= useState();
     const IndividualInventory = allinventoryDatas?.filter(item=> parseFloat(item.to)===userData?.Number || item.to===userData?.Section|| item.to===userData?.Department);
 
+
 useEffect(()=>{
 setAlluserData(alluserDatas);
 setCalendarData(allcalendarDatas);
@@ -109,7 +110,7 @@ const updateinventoryData = (data) => {
     >
 
 {(userData?.type!=="admin"&&userData?.type!=="superadmin")&&<ImageSlider slideImages={slideImages} />}
-{userData?.type==='student'&&<Inventory data={IndividualInventory}/>}
+{(userData?.type==='student'&&IndividualInventory?.length>0)&&<Inventory data={IndividualInventory}/>}
 {(userData?.type!=="admin"&&userData?.type!=="superadmin")&&<Announcements data={announcementData} />}
 {(userData?.type!=="admin"&&userData?.type!=="superadmin")&&<About/>}
 {userData?.type==='student'&&<PopupReminders />}

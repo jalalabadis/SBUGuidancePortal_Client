@@ -30,3 +30,109 @@ font-weight: 100;
     font-weight: 500;
       }
 }
+
+
+/* ======================= */
+
+
+.widget {
+  background-color: #fff;
+  padding: 30px;
+}
+
+.activity {
+  position: relative;
+  h1,h2,h3,h4 {
+    font-family: "Titillium web", Arial;
+  }
+  .activity-items {
+    position: relative;
+    &:before {
+      content: "";
+      position: absolute;
+      top: 0px;
+      bottom: 0px;
+      left: 35px;
+      width: 0px;
+      border-left: 3px dashed #ddd;
+    }
+  }
+  .activity-item-wrap {
+    padding: 7px 0px 7px 70px;
+    position: relative;
+    h4.activity-date {
+      font-size: 18px;
+      margin: 10px 0 0 0;
+      color: #aaa;
+    }
+
+    .activity-item-badge {
+      width: 30px;
+      height: 30px;
+      background: #3c8cc2;
+      color: #fff;
+      border-radius: 50%;
+      position: absolute;
+      top: 17px;
+      left: 19px;
+      text-align: center;
+      border: 3px solid #fff;
+    box-shadow: 0px 2px 3px #ccc;
+      i {
+        line-height: 30px;
+      }
+    }
+    .activity-item {
+      border-radius: 3px;
+      position: relative;
+      border: 1px solid #cbd6e2;
+      background: #f5f8fa;
+      padding: 10px 20px 10px 60px;
+      &:hover {
+        box-shadow: 0 0 12px #cbd6e2;
+        -webkit-transition: all .2s ease-in;
+        -o-transition: all .2s ease-in;
+        transition: all .2s ease-in;
+      }
+      p {
+        margin: 0px;
+      }
+      .activity-item-meta {
+        margin-bottom: 10px;
+        .activity-user {
+          background: #d4edda;
+          height: 40px;
+          width: 40px;
+          border-radius: 50%;
+          position: absolute;
+          left: 10px;
+          margin-right: 10px;
+          color: #155724;
+          text-align: center;
+          line-height: 40px;
+          font-size: 13px;
+          img {
+            margin-top: -3px;
+          }
+          &.activity-ismember {
+            background: #cce5ff;
+            color: #004085;
+          }
+          &.activity-isaro {
+            background: #fff;
+            color: red;
+            border: 1px solid #ddd;
+          }
+        }
+        .activity-summary {
+        font-size: 13px;
+      }
+        .activity-timestamp {
+          font-size: 11px;
+          color: #aaa;
+        }
+      }
+     
+    }
+  }
+}

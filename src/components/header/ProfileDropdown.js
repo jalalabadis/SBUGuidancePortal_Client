@@ -19,7 +19,13 @@ export default function ProfileDropdown({ name, username, image }) {
             </Dropdown.Toggle>
             <Dropdown.Menu align="end" className="mc-dropdown-paper">
                 
-            
+            <Anchor
+                        icon={'person'}
+                        text={'Profile'}
+                        href={'/profile'}
+                        className="mc-dropdown-menu"
+
+                    />
                     <Anchor
                         icon={'lock'}
                         text={'logout'}
